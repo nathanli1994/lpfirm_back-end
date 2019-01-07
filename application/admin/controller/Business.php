@@ -1,0 +1,1219 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2018/10/24
+ * Time: 14:14
+ */
+
+namespace app\admin\controller;
+
+
+class Business extends Base
+{
+
+    //对权重小于3的用户，显示全部业务信息
+    public function index(){
+
+        $count = db('business')->count();
+        if($count == 0){
+            $this->redirect('customer/add');
+        }else{
+            $num = session('sort');
+            if($num <3 || session('duty')=='前台'){
+                $res = db('business')->select()->toArray();
+            }
+            $this->assign('res',$res);
+        }
+        return view();
+    }
+    //个人业务
+    public function personal_business(){
+
+        $name = session('name');
+        $count = db('business')->where('user|export_to|wenan','like',$name)->count();
+        if($count == 0){
+            $this->redirect('customer/personal_customer');
+        }else{
+            if($count >1){
+                $res = db('business')->where('user|export_to|wenan','like',$name)->select()->toArray();
+            }else{
+                $one_res = db('business')->where('user|export_to|wenan','like',$name)->find();
+                $res[] = $one_res;
+            }
+            $this->assign('res',$res);
+        }
+        return view();
+    }
+
+
+    public function edit(){
+        if(request()->isPost()){
+            $data = input('post.');
+            $data = $this->solve_on_off($data);
+            $data['update_time'] = time();
+            unset($data['is_marry']);
+            unset($data['is_worker']);
+            unset($data['is_reject']);
+            unset($data['is_criminal']);
+            unset($data['is_education']);
+
+            //同步更新客人信息
+            if($data['is_export'] !== 0 && $data['is_remind'] == 0){
+                if($data['subservice_name'] =='学签和小签' || $data['subservice_name'] =='身份恢复和小签' || $data['subservice_name'] =='毕业工签和小签'){
+
+                    if($data['progress'] =='申请递交' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                        ];
+                    }
+                }else{
+                    if($data['progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' =>0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }
+                }
+            }
+            elseif ($data['is_remind'] !== 0 && $data['is_export'] == 0){
+                if($data['subservice_name'] =='学签和小签' || $data['subservice_name'] =='身份恢复和小签' || $data['subservice_name'] =='毕业工签和小签'){
+                    if($data['progress'] =='申请递交' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                        ];
+                    }
+                }else{
+                    if($data['progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                        ];
+                    }
+                }
+            }
+            elseif ($data['is_remind'] == 0 && $data['is_export'] == 0){
+                if($data['subservice_name'] =='学签和小签' || $data['subservice_name'] =='身份恢复和小签' || $data['subservice_name'] =='毕业工签和小签'){
+                    if($data['progress'] =='申请递交' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                        ];
+                    }
+                }else{
+                    if($data['progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_remind' => $data['is_remind'],
+                            'is_export' => 0,
+                            'export_to' => 0,
+                        ];
+                    }
+                }
+            }else{
+                if($data['subservice_name'] =='学签和小签' || $data['subservice_name'] =='身份恢复和小签' || $data['subservice_name'] =='毕业工签和小签'){
+                    if($data['progress'] =='申请递交' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='收集材料'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证被拒'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'passport_submit_time'=>$data['submit_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='收集材料' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='申请递交' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }elseif($data['progress'] =='签证被拒' && $data['extra_progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'passport_due'=>$data['expire_time_passport'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                            'passport_progress'=>$data['extra_progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                        ];
+                    }
+                }else{
+                    if($data['progress'] =='申请递交'){
+                        $customer_update_info = [
+                            'visa_submit_time'=>$data['submit_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }elseif($data['progress'] =='签证获批'){
+                        $customer_update_info = [
+                            'visa_due'=>$data['expire_time_visa'],
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                            'visa_progress'=>$data['progress'],
+                        ];
+                    }else{
+                        $customer_update_info = [
+                            'sub_service' => $data['subservice_name'],
+                            'is_export' => $data['is_export'],
+                            'export_to' => $data['export_to'],
+                            'is_remind' => $data['is_remind'],
+                        ];
+                    }
+                }
+            }
+            $current_business_res = db('business')->where('id','=',$data['id'])->find();
+            db('customer')->where('id','=',$current_business_res['student_id'])->update($customer_update_info);
+            db('business')->where('id','=',$data['id'])->update($data);
+
+            $this->redirect('business/personal_business');
+        }
+
+
+
+        $id = input('id');
+        $res = db('business')->where('id','=',$id)->find();
+        $this->assign('res',$res);
+
+        $sub_service = db('subservice')->select()->toArray();
+        $this->assign('sub_service',$sub_service);
+        $user_res = db('user')->select()->toArray();
+        $this->assign('user_res',$user_res);
+
+        return view();
+    }
+
+
+    public function add(){
+        $student_id = input('student_id');
+        $business_id = input('business_id');
+
+        if(request()->isPost()){
+            $data = input('post.');
+            $data = $this->solve_on_off($data);
+            $data['create_time'] = time();
+            unset($data['is_marry']);
+            unset($data['is_worker']);
+            unset($data['is_reject']);
+            unset($data['is_criminal']);
+            unset($data['is_education']);
+
+            //同步更新客人信息
+            if($data['is_export'] !== 0){
+                $customer_update_info = [
+                    'sub_service' => $data['subservice_name'],
+                    'is_export' => $data['is_export'],
+                    'export_to' => $data['export_to'],
+                ];
+            }elseif ($data['is_export'] == 0){
+                $customer_update_info = [
+                    'sub_service' => $data['subservice_name'],
+                    'is_export' => 0,
+                    'export_to' => 0,
+                ];
+            }else{
+                $customer_update_info = [
+                    'sub_service' => $data['subservice_name'],
+                    'is_export' => $data['is_export'],
+                    'export_to' => $data['export_to'],
+                ];
+            }
+            db('customer')->where('id','=',$student_id)->update($customer_update_info);
+
+            $res = db('business')->insert($data);
+            if($res){
+
+                //客人信息
+                $res = db('customer')->where('id','=',$student_id)->find();
+
+                $this->assign('res',$res);
+                //下拉框等
+                $sub_service = db('subservice')->select()->toArray();
+                $city_res = db('cities')->select()->toArray();
+                $user_res = db('user')->select()->toArray();
+                $visa_res = db('visatype')->select()->toArray();
+
+                $this->assign('visa_res',$visa_res);
+                $this->assign('res',$res);
+                $this->assign('sub_service',$sub_service);
+                $this->assign('city_res',$city_res);
+                $this->assign('user_res',$user_res);
+                //业务
+                $business_res = db('business')->where('student_id','=',$student_id)->order('id desc')->select()->toArray();
+                $this->assign('business_res',$business_res);
+
+                /*
+                 *对指定模板渲染
+                 * assign分配要与之前的保持一致（把之前方法里面的分配代码抄过来）
+                 */
+//                return $this->fetch('customer/edit');
+                $this->redirect('business/personal_business');
+            }
+        }
+
+        //隐藏域
+        $student_res = db('customer')->where('id','=',$student_id)->find();
+        $this->assign('student_res',$student_res);
+        //业务选择
+        $count_subservice = db('subservice')->where('pid','=',$business_id)->count();
+        if($count_subservice == 1){
+            $subservice_res = [];
+            $res = db('subservice')->where('pid','=',$business_id)->find();
+            $subservice_res[] = $res;
+        }else{
+            $subservice_res = db('subservice')->where('pid','=',$business_id)->order('sort asc')->select()->toArray();
+        }
+        $this->assign('subservice_res',$subservice_res);
+
+
+        //导单员工选择
+        if(session('sort')<=3){
+            $user_res = db('user')->where('sort','>',session('sort'))->select()->toArray();
+            //将非销售文案移除选择列表
+            foreach ($user_res as $k=>$v){
+                if($v['id']==8 || $v['id']==9){
+                    unset($user_res[$k]);
+                }
+            }
+        }else{
+            $user_res = db('user')->where('position_name','like','%前台%')->select()->toArray();
+        }
+        $this->assign('user_res',$user_res);
+        return view();
+    }
+
+
+
+    public function delete(){
+        $id = input('id');
+        $business_student_id = db('business')->where('id','=',$id)->find();
+        db('business')->where('id','=',$id)->delete();
+        db('pay')->where('business_id','=',$id)->delete();
+
+
+        $count = db('business')->where('student_id','=',$business_student_id['student_id'])->count();
+        if($count == 0){
+            $update_customer = [
+                'sub_service'=> null,
+                'is_export'=>0,
+                'is_remind'=>0,
+                'export_to'=>0,
+                'remind'=>null,
+                'visa_progress'=>null,
+                'passport_progress'=>null,
+                'wenan'=>null,
+            ];
+            db('customer')->where('id','=',$business_student_id['student_id'])->update($update_customer);
+        }
+        $this->redirect('business/personal_business');
+    }
+
+
+
+
+
+    public function get_Multi_Progress(){
+
+        if(request()->isPost()){
+            $subservice = input('subservice');
+            $business_id = input('business_id');
+
+            $business_res = db('business')->where('id','=',$business_id)->find();
+            $res = db('progress')->where('subservice_name','like',$subservice)->order('sort','asc')->select()->toArray();
+
+            $opt = '';
+            $opt2 = '';
+            $arr = [];
+
+            foreach ($res as $k=>$v){
+                if($business_res['progress'] == $v['name']){
+                    $opt .= "<option selected value='{$business_res['progress']}'>{$business_res['progress']}</option>";
+                }else{
+                    $opt .= "<option value='{$v['name']}'>{$v['name']}</option>";
+                }
+            }
+
+            foreach ($res as $k=>$v){
+                if($business_res['extra_progress'] == $v['name']){
+                    $opt2 .= "<option selected value='{$business_res['extra_progress']}'>{$business_res['extra_progress']}</option>";
+                }else{
+                    $opt2 .= "<option value='{$v['name']}'>{$v['name']}</option>";
+                }
+            }
+
+            //返回给客户端的要是一个索引数组
+            $arr[] = $opt;
+            $arr[] = $opt2;
+        }
+        return json($arr);
+    }
+
+
+    public function getProgress(){
+
+        if(request()->isPost()){
+            $subservice = input('subservice');
+            $business_id = input('business_id');
+
+            $business_res = db('business')->where('id','=',$business_id)->find();
+            $res = db('progress')->where('subservice_name','like',$subservice)->order('sort','asc')->select()->toArray();
+
+            $opt = '';
+            foreach ($res as $k=>$v){
+                if($business_res['progress'] == $v['name']){
+                    $opt .= "<option selected value='{$business_res['progress']}'>{$business_res['progress']}</option>";
+                }else{
+                    $opt .= "<option value='{$v['name']}'>{$v['name']}</option>";
+                }
+            }
+        }
+        return json($opt);
+    }
+
+
+
+    public function getFees(){
+
+        if(request()->isPost()){
+            $subservice = input('subservice');
+            $res = db('subservice')->where('name','like',$subservice)->find();
+            $input = [];
+            $input[] = "<input class='form-control' type='text' name='service_fee' value='{$res['fee']}' readonly/>";
+            $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/>";
+            $input[] = "<input class='form-control' type='text' name='goverment_fee' value='{$res['goverment_fee']}' readonly/>";
+            $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' readonly/>";
+            $input[] = "<input class='form-control' type='text' name='non_refundable' value='{$res['non_refundable']}' readonly/>";
+        }
+        return json($input);
+    }
+
+
+    public function change_status(){
+
+        if(request()->isPost()){
+            $data = input('post.');
+            $data['is_export'] = 1;
+            $data = $this->solve_on_off($data);
+            unset($data['is_marry']);
+            unset($data['is_worker']);
+            unset($data['is_reject']);
+            unset($data['is_criminal']);
+            unset($data['is_education']);
+
+            //把文案信息更新到客户
+            $business_res = db('business')->where('id','=',$data['id'])->find();
+            db('customer')->where('id','like',$business_res['student_id'])->update(['wenan'=>$data['wenan']]);
+
+            $res = db('business')->where('id','=',$data['id'])->update($data);
+
+            if($res){
+                $this->redirect('business/index');
+            }
+        }
+
+
+        $id = input('id');
+        $res = db('business')->where('id','=',$id)->find();
+        $this->assign('res',$res);
+
+        $sub_service = db('subservice')->select()->toArray();
+        $this->assign('sub_service',$sub_service);
+        $user_res = db('user')->select()->toArray();
+        $this->assign('user_res',$user_res);
+        return view();
+    }
+
+
+    public function getSub(){
+
+        if(request()->isPost()){
+            $business_type = input('business_type');
+            $res = db('subservice')->where('business_type','like','%'.$business_type.'%')->select()->toArray();
+
+            $opt = '<option value="">请选择</option>';
+            foreach ($res as $k=>$v){
+                $opt .= "<option value='{$v['name']}'>{$v['name']}</option>";
+            }
+        }
+        return json($opt);
+    }
+
+
+
+
+
+    public function university_program_add(){
+        $student_id = input('student_id');
+
+        if(request()->isPost()){
+            $data = input('post.');
+            $data['create_time'] = time();
+            db('university')->insert($data);
+            $this->redirect('business/personal_business');
+        }
+        $this->assign('student_id',$student_id);
+        return view();
+    }
+
+
+    public function university_program_list(){
+        $student_id = input('student_id');
+        $count = db('university')->where('student_id','=',$student_id)->count();
+        if($count == 0){
+            $this->redirect('business/personal_business');
+        }else{
+            if($count == 1){
+                $one_res = db('university')->where('student_id','=',$student_id)->find();
+                $res[] = $one_res;
+            }else{
+                $res = db('university')->where('student_id','=',$student_id)->select()->toArray();
+            }
+
+            $this->assign('res',$res);
+        }
+
+        return view();
+    }
+
+
+    public function set_final_decision(){
+        $id = input('id');
+        db('university')->where('id','=',$id)->update(['final_decision'=>1]);
+        $this->success('已设置为最终决定');
+    }
+    public function cancel_final_decision(){
+        $id = input('id');
+        db('university')->where('id','=',$id)->update(['final_decision'=>0]);
+        $this->success('已经取消设置');
+    }
+
+
+
+
+}

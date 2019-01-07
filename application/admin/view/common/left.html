@@ -1,0 +1,195 @@
+
+
+
+<!-- Sidebar -->
+<ul class="nav navbar-nav side-nav" id="sidebar">
+
+    <li class="collapsed-content">
+        <ul>
+            <li class="search"><!-- Collapsed search pasting here at 768px --></li>
+        </ul>
+    </li>
+
+    <li class="navigation" id="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="#navigation">Navigation <i class="fa fa-angle-up"></i></a>
+
+        <ul class="menu">
+
+            <li class="active">
+                <a href="index.html">
+                    <i class="fa fa-tachometer"></i> Dashboard
+                    <span class="badge badge-red">1</span>
+                </a>
+            </li>
+
+
+
+            <!--个人-->
+            {if condition="$Request.session.duty =='前台'"}
+            {else/}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 个人 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{:url('customer/personal_customer')}">
+                            <i class="fa fa-caret-right"></i> <span>{$Request.session.name}</span> 的客户
+                        </a>
+                        <a href="{:url('business/personal_business')}">
+                            <i class="fa fa-caret-right"></i> {$Request.session.name} 的业务
+                        </a>
+                        <a href="{:url('performance/personal_performance')}">
+                            <i class="fa fa-caret-right"></i> {$Request.session.name} 的业绩
+                        </a>
+                        <a href="{:url('index/password')}">
+                            <i class="fa fa-caret-right"></i> 修改登陆密码
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {/if}
+
+
+
+            <!--公司-->
+            {if condition="$Request.session.sort <= 2"}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 公司 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{:url('customer/index')}">
+                            <i class="fa fa-caret-right"></i> 公司客户
+                        </a>
+                        <a href="{:url('business/index')}">
+                            <i class="fa fa-caret-right"></i> 公司业务
+                        </a>
+                        <a href="{:url('performance/index')}">
+                            <i class="fa fa-caret-right"></i> 公司业绩
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {elseif condition="$Request.session.duty =='前台'"}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 公司 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{:url('business/index')}">
+                            <i class="fa fa-caret-right"></i> 公司的业务
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {else/}
+            {/if}
+
+            <!--后台管理-->
+            {if condition="$Request.session.sort > 2"}
+            {else/}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 后台管理 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+
+                    <li>
+                        <a href="{:url('department/index')}">
+                            <i class="fa fa-caret-right"></i> 部门管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:url('position/index')}">
+                            <i class="fa fa-caret-right"></i> 职位管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:url('standard/index')}">
+                            <i class="fa fa-caret-right"></i> 职位绩效考核
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:url('user/index')}">
+                            <i class="fa fa-caret-right"></i> 员工管理
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 业务管理 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+
+                    <li>
+                        <a href="{:url('visatype/index')}">
+                            <i class="fa fa-caret-right"></i>签证类型（客户信息中的签证类型选择）
+                        </a>
+                        <a href="{:url('subservice/index')}">
+                            <i class="fa fa-caret-right"></i>业务类型（添加业务中的选择业务）
+                        </a>
+                        <a href="{:url('progress/index')}">
+                            <i class="fa fa-caret-right"></i>业务进度管理
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-list"></i> 业绩管理 <b class="fa fa-plus dropdown-plus"></b>
+                </a>
+                <ul class="dropdown-menu">
+
+                    <li>
+                        <a href="{:url('subservice/highschools_index')}">
+                            <i class="fa fa-caret-right"></i>高中
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {/if}
+        </ul>
+    </li>
+    <!--<li class="summary" id="order-summary">-->
+        <!--<a href="#" class="sidebar-toggle underline" data-toggle="#order-summary">Orders Summary <i class="fa fa-angle-up"></i></a>-->
+
+        <!--<div class="media">-->
+            <!--<a class="pull-right" href="#">-->
+                <!--<span id="sales-chart"></span>-->
+            <!--</a>-->
+            <!--<div class="media-body">-->
+                <!--This week sales-->
+                <!--<h3 class="media-heading">26, 149</h3>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="media">-->
+            <!--<a class="pull-right" href="#">-->
+                <!--<span id="balance-chart"></span>-->
+            <!--</a>-->
+            <!--<div class="media-body">-->
+                <!--This week balance-->
+                <!--<h3 class="media-heading">318, 651</h3>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</li>-->
+</ul>
+<!-- Sidebar end -->
+
+
+
+
+
+</div>
+<!--/.nav-collapse -->
+
+
+
+
+
+</div>
+<!-- Fixed navbar end -->
