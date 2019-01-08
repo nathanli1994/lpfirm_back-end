@@ -77,9 +77,18 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">建档时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="{$res.create_time|date='Y-m-d',###}" readonly/>
+                                            <input class='form-control' type='text' value="{$res.make_file_date|date='Y-m-d',###}" readonly/>
                                         </div>
                                     </div>
+                                    {if condition='$res.case_close_time neq null'}
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">结案时间</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' value="{$res.case_close_time|date='Y-m-d',###}" readonly/>
+                                        </div>
+                                    </div>
+                                    {/if}
+
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label" >特殊情况备注</label>
                                         <div class="col-sm-8">

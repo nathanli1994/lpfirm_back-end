@@ -27,6 +27,10 @@ class Business extends Base
         }
         return view();
     }
+
+
+
+
     //个人业务
     public function personal_business(){
 
@@ -40,6 +44,12 @@ class Business extends Base
             }else{
                 $one_res = db('business')->where('user|export_to|wenan','like',$name)->find();
                 $res[] = $one_res;
+            }
+
+            foreach ($res as $k=>$v){
+                if($v['subservice_name'] == '疑难签证'){
+                    $res[$k]['refundable'] = round($v['refundable']* 2 / 3, 0);
+                }
             }
             $this->assign('res',$res);
         }
@@ -888,14 +898,18 @@ class Business extends Base
                     }
                 }
             }
+
+            //结案时间，case_close_time
+            if($data['progress'] == '签证获批' || $data['progress'] == '签证被拒'){
+                $data['case_close_time'] = time();
+            }
+
             $current_business_res = db('business')->where('id','=',$data['id'])->find();
             db('customer')->where('id','=',$current_business_res['student_id'])->update($customer_update_info);
             db('business')->where('id','=',$data['id'])->update($data);
 
             $this->redirect('business/personal_business');
         }
-
-
 
         $id = input('id');
         $res = db('business')->where('id','=',$id)->find();
@@ -1118,6 +1132,7 @@ class Business extends Base
 
         if(request()->isPost()){
             $data = input('post.');
+            $data['update_time'] = time();
             $data['is_export'] = 1;
             $data = $this->solve_on_off($data);
             unset($data['is_marry']);
@@ -1125,6 +1140,11 @@ class Business extends Base
             unset($data['is_reject']);
             unset($data['is_criminal']);
             unset($data['is_education']);
+
+            //如果选择了文案则添加建档时间，对应数据库make_file_date
+            if(!empty($data['wenan'])){
+                $data['make_file_date'] = time();
+            }
 
             //把文案信息更新到客户
             $business_res = db('business')->where('id','=',$data['id'])->find();

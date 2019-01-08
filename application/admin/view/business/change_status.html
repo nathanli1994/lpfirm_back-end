@@ -34,7 +34,8 @@
                     <!-- tile body -->
                     <form method="post" action="{:url('business/change_status')}">
                         <input type="text" class="form-control hidden" name="id" placeholder="要修改的business的id" value="{$res.id}">
-                        <input type="text" class="form-control hidden" name="referee" placeholder="修改人的名字" value="{$Request.session.name}">
+                        <input type="text" class="form-control hidden" name="referee" placeholder="分流人的名字" value="{$Request.session.name}">
+                        <input type="text" class="form-control hidden" name="edit_name" placeholder="修改人的名字" value="{$Request.session.name}">
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row">
