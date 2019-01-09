@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal 1.0 - DataTables</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+
+    <link rel="icon" type="image/ico" href="http://tattek.com/minimal//static/assets/images/favicon.ico" />
+    <!-- Bootstrap -->
+    <link href="/static/assets/css/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/vendor/animate/animate.css">
+    <link type="text/css" rel="stylesheet" media="all" href="/static/assets/js/vendor/mmenu/css/jquery.mmenu.all.css" />
+    <link rel="stylesheet" href="/static/assets/js/vendor/videobackground/css/jquery.videobackground.css">
+    <link rel="stylesheet" href="/static/assets/css/vendor/bootstrap-checkbox.css">
+
+    <link rel="stylesheet" href="/static/assets/js/vendor/chosen/css/chosen.min.css">
+    <link rel="stylesheet" href="/static/assets/js/vendor/chosen/css/chosen-bootstrap.css">
+    <link rel="stylesheet" href="/static/assets/js/vendor/datatables/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="/static/assets/js/vendor/datatables/css/ColVis.css">
+    <link rel="stylesheet" href="/static/assets/js/vendor/datatables/css/TableTools.css">
+
+    <link href="/static/assets/css/minimal.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+{include file="common/top" /}
+{include file="common/left" /}
+
+
+
+
+
+
+<!-- Page content -->
+<div id="content" class="col-md-12">
+
+
+
+
+
+
+
+
+
+    <!-- page header -->
+    <div class="pageheader">
+        <h2>
+            <i class="fa fa-lightbulb-o" style="line-height: 48px;padding-left: 0;"></i> 业务列表
+        </h2>
+    </div>
+    <!-- /page header -->
+
+
+
+
+
+
+    <!-- content main container -->
+    <div class="main">
+
+
+
+
+        <!-- row -->
+        <div class="row">
+
+
+            <!-- col 12 -->
+            <div class="col-md-12">
+
+
+                <!-- tile -->
+                <section class="tile transparent">
+
+
+                    <!-- tile header -->
+                    <div class="tile-header transparent">
+                        <h1><strong>{$Request.session.name} 的业务信息</strong></h1>
+                    </div>
+                    <!-- /tile header -->
+
+                    <!-- tile body -->
+                    <div class="tile-body color transparent-black rounded-corners">
+
+                        <div class="table-responsive">
+                            <table  class="table table-datatable table-custom" id="basicDataTable">
+                                <thead>
+                                <tr>
+                                    <!--<th class="text-center">头像</th>-->
+                                    <th class="text-center hidden">id</th>
+                                    <th class="text-center">客户姓名</th>
+                                    <th class="text-center">所办业务</th>
+                                    <th class="text-center">所收费用</th>
+                                    <th class="text-center">可退款金额</th>
+                                    <th class="text-center">进度</th>
+                                    <th class="text-center">递交 / 预约时间</th>
+                                    <th class="text-center">负责销售</th>
+                                    <th class="text-center">跟进人</th>
+                                    {if condition="$Request.session.duty neq '文案'"}
+                                    <th class="text-center">负责文案</th>
+                                    {/if}
+                                    <th class="text-center">修改人</th>
+                                    <th class="text-center">修改时间</th>
+
+                                    <th class="text-center">结案时间</th>
+
+                                    {if condition="$Request.session.duty eq '文案'"}
+                                    <th class="text-center">服务费修改原因</th>
+                                    {/if}
+
+
+                                    <th class="text-center">Action</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                {volist name="res" id="v"}
+                                <tr>
+                                    <td class="text-center hidden">{$v.id}</td>
+
+                                    {if condition="$Request.session.duty eq '文案'"}
+                                    <td class="text-center"><a href="{:url('business/edit',array('id'=>$v['id']))}">{$v.customer_name}</a></td>
+                                    {else/}
+                                    <td class="text-center">{$v.customer_name}</td>
+                                    {/if}
+
+                                    <td class="text-center">{$v.subservice_name}</td>
+                                    <td class="text-center">$ {$v.service_fee}</td>
+
+                                    <td class="text-center">
+                                    {if condition="$v.subservice_name eq '疑难签证'"}
+                                        $ {$v.refundable}
+                                    {else/}
+                                        {if condition = "$v.wenan eq null"}
+                                        $ {$v.refundable}
+                                        {else/}
+                                        $ 0
+                                        {/if}
+                                    {/if}
+                                    </td>
+
+                                    {if condition="($v.subservice_name eq '学签和小签') || ($v.subservice_name eq '身份恢复和小签') || ($v.subservice_name eq '毕业工签和小签')"}
+                                    <td class="text-center">
+                                        签证：{$v.progress}
+                                        {if condition="$v.progress == '收集材料'"}
+                                        &nbsp;&nbsp;<span class="label label-danger">not in progress</span>
+                                        {elseif condition="$v.progress == '申请递交'"}
+                                        &nbsp;&nbsp;<span class="label label-success">in progress</span>
+                                        {else/}
+                                        &nbsp;&nbsp;<span class="label label-cyan">done</span>
+                                        {/if}
+                                        <br/><br/>
+                                        小签：{$v.extra_progress}
+                                        {if condition="$v.extra_progress == '收集材料'"}
+                                        &nbsp;&nbsp;<span class="label label-danger"> not in progress</span>
+                                        {elseif condition="$v.extra_progress == '申请递交'"}
+                                        &nbsp;&nbsp;<span class="label label-success"> in progress</span>
+                                        {else/}
+                                        &nbsp;&nbsp;<span class="label label-cyan"> done</span>
+                                        {/if}
+                                    </td>
+                                    {else/}
+                                        {if condition="$v.progress eq '申请递交'"}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-success">in progress</span></td>
+                                        {elseif condition="$v.progress eq '收集材料'"/}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-danger">not in progress</span></td>
+                                        {elseif condition="($v.progress eq '签证获批') or ($v.progress eq '签证被拒')"/}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-cyan">done</span></td>
+                                        {else/}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-success">in progress</span></td>
+                                        {/if}
+                                    {/if}
+
+                                    {if condition="$v.subservice_name eq '美国旅游签证' && $v.progress eq '完成预约'"}
+                                    <td class="text-center"><span class="label-success label">预约时间</span> &nbsp;{$v.submit_time_visa}</td>
+                                    {elseif condition="$v.subservice_name eq '美国旅游签证' && $v.progress neq '完成预约'"/}
+                                    <td class="text-center"></td>
+                                    {else/}
+                                    <td class="text-center">{$v.submit_time_visa}</td>
+                                    {/if}
+
+                                    <td class="text-center">{$v.user}</td>
+
+                                    {if condition="$Request.session.sort <=2"}
+                                        {if condition="$v.is_export neq 0 and $v.export_to neq null"}
+                                        <td class="text-center">{$v.export_to}</td>
+                                        {elseif condition="$v.is_export eq 0 || $v.export_to eq null"/}
+                                        <td class="text-center"><span class="label label-red">off</span></td>
+                                        {else/}
+                                        <td class="text-center"><span class="label label-success">on</span><span class="label label-danger">未设置跟进人</span></td>
+                                        {/if}
+                                    {else/}
+                                        {if condition="$v.is_export neq 0 and $v.export_to neq null"}
+                                        <td class="text-center">{$v.export_to}</td>
+                                        {else/}
+                                        <td class="text-center">{$v.user}</td>
+                                        {/if}
+                                    {/if}
+
+                                    {if condition="$Request.session.duty neq '文案'"}
+                                    <td class="text-center">
+                                        {if condition="$v.wenan eq null"}
+                                        <span class="label-danger label">请前台选择文案</span>
+                                        {else/}
+                                        {$v.wenan}
+                                        {/if}
+                                    </td>
+                                    {/if}
+
+
+                                    <td class="text-center">{$v.edit_name}</td>
+
+                                    {if condition="$v.update_time neq null"}
+                                    <td class="text-center">{$v.update_time|date="Y-m-d",###}</td>
+                                    {else/}
+                                    <td class="text-center"></td>
+                                    {/if}
+
+
+                                    {empty name="$v.case_close_time"}
+                                    <td class="text-center">TBD</td>
+                                    {else/}
+                                    <td class="text-center">{$v.case_close_time|date="Y-m-d",###}</td>
+                                    {/empty}
+
+
+
+                                    {if condition="$Request.session.duty eq '文案'"}
+                                    <td class="text-center">
+                                        {if condition="$v.service_fee_change_reason neq null"}
+                                        {$v.service_fee_change_reason}
+                                        {else/}
+                                        {/if}
+                                    </td>
+                                    {/if}
+
+
+                                    <td class="text-center">
+                                        {if condition="$Request.session.name neq $v.user && $Request.session.name neq $v.wenan"}
+                                        {else/}
+                                            {if condition="$v.is_payoff eq 1"}
+                                            <a class="label label-success" href="#"><span class="fa fa-check">已付全款</span></a>
+                                            {else/}
+                                            {if condition="$v.subservice_name eq '大学申请'"}
+                                            <a class="btn btn-cyan btn-sm" href="{:url('business/university_program_add',array('student_id'=>$v.id))}">添加专业</a>
+                                            <a class="btn btn-success btn-sm" href="{:url('business/university_program_list',array('student_id'=>$v.id))}">查看专业</a>
+                                            {/if}
+                                            <a class="btn btn-danger btn-sm" href="{:url('business/delete',array('id'=>$v.id))}">删除</a>
+                                            {/if}
+                                        {/if}
+                                    </td>
+
+                                </tr>
+                                {/volist}
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /tile body -->
+
+
+
+                </section>
+                <!-- /tile -->
+
+
+            </div>
+            <!-- /col 12 -->
+
+
+
+        </div>
+        <!-- /row -->
+
+
+
+
+    </div>
+    <!-- /content container -->
+
+
+
+
+
+
+</div>
+<!-- Page content end -->
+
+
+
+
+
+
+
+
+
+
+</div>
+<!-- Make page fluid-->
+
+
+
+
+</div>
+<!-- Wrap all page content end -->
+
+
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/static/assets/js/jquery.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/static/assets/js/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=css&skin=sons-of-obsidian"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/mmenu/js/jquery.mmenu.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/sparkline/jquery.sparkline.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/nicescroll/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/animate-numbers/jquery.animateNumbers.js"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/videobackground/jquery.videobackground.js"></script>
+<script type="text/javascript" src="/static/assets/js/vendor/blockui/jquery.blockUI.js"></script>\
+
+<script src="/static/assets/js/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/assets/js/vendor/datatables/ColReorderWithResize.js"></script>
+<script src="/static/assets/js/vendor/datatables/colvis/dataTables.colVis.min.js"></script>
+<script src="/static/assets/js/vendor/datatables/tabletools/ZeroClipboard.js"></script>
+<script src="/static/assets/js/vendor/datatables/tabletools/dataTables.tableTools.min.js"></script>
+<script src="/static/assets/js/vendor/datatables/dataTables.bootstrap.js"></script>
+
+<script src="/static/assets/js/vendor/chosen/chosen.jquery.min.js"></script>
+
+<script src="/static/assets/js/minimal.min.js"></script>
+
+<script>
+    $(function(){
+
+        // Add custom class to pagination div
+        $.fn.dataTableExt.oStdClasses.sPaging = 'dataTables_paginate paging_bootstrap paging_custom';
+
+        /*************************************************/
+        /**************** BASIC DATATABLE ****************/
+        /*************************************************/
+
+        /* Define two custom functions (asc and desc) for string sorting */
+        jQuery.fn.dataTableExt.oSort['string-case-asc']  = function(x,y) {
+            return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+        };
+
+        jQuery.fn.dataTableExt.oSort['string-case-desc'] = function(x,y) {
+            return ((x < y) ?  1 : ((x > y) ? -1 : 0));
+        };
+
+        /* Add a click handler to the rows - this could be used as a callback */
+        $("#basicDataTable tbody tr").click( function( e ) {
+            if ( $(this).hasClass('row_selected') ) {
+                $(this).removeClass('row_selected');
+            }
+            else {
+                oTable01.$('tr.row_selected').removeClass('row_selected');
+                $(this).addClass('row_selected');
+            }
+
+            // FadeIn/Out delete rows button
+            if ($('#basicDataTable tr.row_selected').length > 0) {
+                $('#deleteRow').stop().fadeIn(300);
+            } else {
+                $('#deleteRow').stop().fadeOut(300);
+            }
+        });
+
+        /* Build the DataTable with third column using our custom sort functions */
+        var oTable01 = $('#basicDataTable').dataTable({
+            "sDom":
+                "R<'row'<'col-md-6'l><'col-md-6'f>r>"+
+                "t"+
+                "<'row'<'col-md-4 sm-center'i><'col-md-4'><'col-md-4 text-right sm-center'p>>",
+            "oLanguage": {
+                "sSearch": "搜 索 ："
+            },
+            "aaSorting": [[0,'desc']],
+            "fnInitComplete": function(oSettings, json) {
+                $('.dataTables_filter input').attr("placeholder", "Search");
+            }
+        });
+
+        //initialize chosen
+        $('.dataTables_length select').chosen({disable_search_threshold: 10});
+
+    })
+
+</script>
+</body>
+</html>
+

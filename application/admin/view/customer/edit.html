@@ -1,0 +1,953 @@
+{include file="common/css" /}
+{include file="common/top" /}
+{include file="common/left" /}
+
+
+
+
+
+
+<!-- Page content -->
+<div id="content" class="col-md-12">
+
+
+
+
+
+
+
+
+
+    <!-- page header -->
+    <div class="pageheader">
+        <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 客户信息 </h2>
+    </div>
+    <!-- /page header -->
+
+
+
+
+
+
+    <!-- content main container -->
+    <div class="main">
+        <!--客户信息-->
+        <div class="row">
+            <form class="form-horizontal" role="form" action="{:url('customer/edit')}" method="post" enctype="multipart/form-data">
+                <input type="text" class="form-control hidden" name="id" value="{$res.id}">
+                <!-- col 12 -->
+                <div class="col-md-12">
+                    <!-- tile -->
+                    <section class="tile color transparent-white">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>基本信息</strong> </h1>
+                        </div>
+                        <!-- /tile header -->
+                        <!-- tile body -->
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">姓名</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="name" value="{$res.name}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >电话</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='+1 (999) - 999 - 9999' placeholder='+1 (999) - 999 - 9999' type='text' name="phone" value="{$res.phone}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >生日</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999/99/99' placeholder='年/月/日' type='text' name="dob" value="{$res.dob}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >邮箱</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="email" value="{$res.email}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >身份证</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' maxlength="18" type='text' name="chinese_id" value="{$res.chinese_id}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">性别</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="gender">
+                                                <option selected disabled>---请选择---</option>
+                                                {if condition="$res.gender eq '男'"}
+                                                <option selected value="男">男</option>
+                                                {else/}
+                                                <option selected value="女">女</option>
+                                                {/if}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">城市</label>
+                                        <div class="col-sm-8">
+                                            <!--<input class='form-control' type='text' name="city" value="{$res.city}"/>-->
+                                            <select class="chosen-select chosen-transparent form-control" name="city" id="city">
+                                                {volist name="city_res" id="v"}
+                                                {if condition="$v.name eq $res.city"}
+                                                <option selected value="{$v.name}">{$v.name}</option>
+                                                {else/}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/if}
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">省份</label>
+                                        <div class="col-sm-8" id="province">
+                                            <input class='form-control' type='text' name="province" value="{$res.province}" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">区域</label>
+                                        <div class="col-sm-8" id="region">
+                                            <input class='form-control' type='text' name="region" value="{$res.region}" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >签证截止日</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="visa_due" value="{$res.visa_due}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">签证类型</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="visa_type">
+                                                <option selected disabled>---请选择---</option>
+                                                {volist name="visa_res" id="v"}
+                                                {if condition="$v.name eq $res.visa_type"}
+                                                <option selected value="{$v.name}">{$v.name}</option>
+                                                {else/}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/if}
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >UCI</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="uci" value="{$res.uci}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >护照截止日</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="passport_due" value="{$res.passport_due}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >护照号码</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="passport_number" value="{$res.passport_number}" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tile body -->
+                    </section>
+                    <!-- /tile -->
+
+                    <!-- tile 联系人信息-->
+                    <section class="tile color transparent-white">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>紧急联系人信息</strong> </h1>
+                        </div>
+                        <!-- /tile header -->
+                        <!-- tile body -->
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">联系人姓名</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" name="contact_name" value="{$res.contact_name}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >联系人电话</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="contact_phone" value="{$res.contact_phone}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >关系</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="contact_relationship" value="{$res.contact_relationship}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tile body -->
+                    </section>
+                    <!-- /tile -->
+
+                    <!-- tile 登陆信息-->
+                    <section class="tile color transparent-white">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>其他信息</strong> </h1>
+                        </div>
+                        <!-- /tile header -->
+                        <!-- tile body -->
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >首次入境日期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999/99/99' placeholder='年/月/日' type='text' name="landing_time" value="{$res.landing_time}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >登陆地点</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="landing_location" value="{$res.landing_location}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >最近一次入境日期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999/99/99' placeholder='年/月/日' type='text' name="last_landing_time" value="{$res.last_landing_time}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >最近一次入境地点</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="last_landing_location" value="{$res.last_landing_location}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >现居住城市</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="current_location" value="{$res.current_location}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">婚史</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    {if condition="$res.is_marry eq 1"}
+                                                    <input type="checkbox" name="is_marry" class="onoffswitch-checkbox" id="myonoffswitch3" checked>
+                                                    {else/}
+                                                    <input type="checkbox" name="is_marry" class="onoffswitch-checkbox" id="myonoffswitch3">
+                                                    {/if}
+                                                    <label class="onoffswitch-label" for="myonoffswitch3">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <li><span class="btn btn-success" id="1">add new</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >工作经历</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    {if condition="$res.is_worker eq 1"}
+                                                    <input type="checkbox" name="is_worker" class="onoffswitch-checkbox" id="myonoffswitch4" checked>
+                                                    {else/}
+                                                    <input type="checkbox" name="is_worker" class="onoffswitch-checkbox" id="myonoffswitch4" >
+                                                    {/if}
+
+                                                    <label class="onoffswitch-label" for="myonoffswitch4">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <li><span class="btn btn-success" id="3">add new</span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >教育记录</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    {if condition="$res.is_education eq 1"}
+                                                    <input type="checkbox" name="is_education" class="onoffswitch-checkbox" id="myonoffswitch7" checked>
+                                                    {else/}
+                                                    <input type="checkbox" name="is_education" class="onoffswitch-checkbox" id="myonoffswitch7" >
+                                                    {/if}
+
+                                                    <label class="onoffswitch-label" for="myonoffswitch7">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <li><span class="btn btn-success" id="2">add new</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >拒签记录</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    {if condition="$res.is_reject eq 1"}
+                                                    <input type="checkbox" name="is_reject" class="onoffswitch-checkbox" id="myonoffswitch5" checked>
+                                                    {else/}
+                                                    <input type="checkbox" name="is_reject" class="onoffswitch-checkbox" id="myonoffswitch5" >
+                                                    {/if}
+
+                                                    <label class="onoffswitch-label" for="myonoffswitch5">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {if condition="$res.is_reject eq 0"}
+                                    <div class="form-group col-md-4 hidden" id="reject">
+                                    {else/}
+                                    <div class="form-group col-md-4" id="reject">
+                                    {/if}
+                                        <label class="col-sm-4 control-label">拒签详情</label>
+                                        <div class="col-sm-8">
+                                            <textarea class='form-control' name="reject" >{$res.reject}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >犯罪记录</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    {if condition="$res.is_criminal eq 1"}
+                                                    <input type="checkbox" name="is_criminal" class="onoffswitch-checkbox" id="myonoffswitch6" checked>
+                                                    {else/}
+                                                    <input type="checkbox" name="is_criminal" class="onoffswitch-checkbox" id="myonoffswitch6" >
+                                                    {/if}
+
+                                                    <label class="onoffswitch-label" for="myonoffswitch6">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {if condition="$res.is_criminal eq 0"}
+                                    <div class="form-group col-md-4 hidden" id="criminal">
+                                    {else/}
+                                    <div class="form-group col-md-4" id="criminal">
+                                    {/if}
+                                        <label class="col-sm-4 control-label">犯罪详情</label>
+                                        <div class="col-sm-8">
+                                            <textarea class='form-control' name="criminal">{$res.criminal}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label class="col-sm-4 control-label" ></label>
+                                        <div class="col-lg-offset-6">
+                                            <button type="submit" class="btn btn-greensea">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tile body -->
+                    </section>
+                    <!-- /tile -->
+                    <!-- tile 婚史-->
+                    <section class="tile color transparent-white hidden" id="marry">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>婚史信息</strong> </h1>
+                        </div>
+                        <!-- /tile header -->
+                        <!-- tile body -->
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">婚姻状况</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="marriage_history[marriage_status]">
+                                                <option selected disabled>---请选择---</option>
+                                                <option value="已婚">已婚</option>
+                                                <option value="common law">common law</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">配偶在加身份</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="marriage_history[is_citizen]">
+                                                <option selected disabled>---请选择---</option>
+                                                <option value="工签">工签</option>
+                                                <option value="学签">学签</option>
+                                                <option value="旅游签">旅游签</option>
+                                                <option value="PR">PR</option>
+                                                <option value="移民">移民</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">是否有其他婚史</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="marriage_history[marriage_history]" id="marriage_history">
+                                                <option selected disabled>---请选择---</option>
+                                                <option value="0">否</option>
+                                                <option value="1">是</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /tile body -->
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >配偶姓名</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="marriage_history[spouse_name]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >结婚日期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999-99' placeholder='9999-99' type='text' name="marriage_history[marry_date]"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--追加信息-->
+                        <div class="tile-body hidden" id="has_marriage_history">
+                            <div class="form-horizontal" id="extra_marriage_info">
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >前任姓名</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="marriage_history[pre_spouse_name][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >前任生日</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='9999-99' placeholder='9999-99' type='text' name="marriage_history[pre_birthday][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >婚姻周期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' placeholder="请填写信息或者日期区间" type='text' name="marriage_history[marriage_period][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" ></label>
+                                        <div class="col-lg-offset-6">
+                                            <button type="button" id="new_marriage" class="btn btn-greensea">追加一栏</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- /tile -->
+                    <!-- tile 工作史-->
+                    <section class="tile color transparent-white hidden" id="worker">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>工作经历</strong> </h1>
+                        </div>
+                        <div class="tile-body" id="has_work_history">
+                            <div class="form-horizontal" id="extra_work_info">
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >公司名称</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="work_history[name][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >公司地址</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="work_history[address][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >工作周期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="work_history[time][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >职位</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="work_history[position][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" ></label>
+                                        <div class="col-lg-offset-6">
+                                            <button type="button" id="new_work" class="btn btn-greensea">追加一栏</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- /tile -->
+                    <!-- tile 教育史-->
+                    <section class="tile color transparent-white hidden" id="education">
+                        <!-- tile header -->
+                        <div class="tile-header">
+                            <h1><strong>学习经历</strong> </h1>
+                        </div>
+                        <div class="tile-body" id="has_education_history">
+                            <div class="form-horizontal" id="extra_education_info">
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >学校名称</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="education_history[name][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >学校地址</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="education_history[address][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >上学周期</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="education_history[time][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" >专业</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="education_history[program][]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label class="col-sm-4 control-label" ></label>
+                                        <div class="col-lg-offset-6">
+                                            <button type="button" id="new_education" class="btn btn-greensea">追加一栏</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- /tile -->
+                </div>
+                <!-- /col 12 -->
+            </form>
+
+
+            <!--婚姻-->
+            {empty name="marriage_res"}
+            {else /}
+            <div class="col-md-12">
+                <section class="tile color transparent-white">
+                    <div class="tile-header">
+                        <h1><strong>婚姻经历</strong> </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- tile -->
+                            <section class="tile color transparent-white">
+                                {include file="customer/marriage" /}
+                            </section>
+                            <!-- /tile -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+            {/empty}
+            <!--工作-->
+            {empty name="work_res"}
+            {else /}
+            <div class="col-md-12">
+                <section class="tile color transparent-white">
+                    <div class="tile-header">
+                        <h1><strong>工作经历</strong> </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- tile -->
+                            <section class="tile color transparent-white">
+                                {include file="customer/work" /}
+                            </section>
+                            <!-- /tile -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+            {/empty}
+            <!--教育-->
+            {empty name="education_res"}
+            {else /}
+            <div class="col-md-12">
+                <section class="tile color transparent-white">
+                    <div class="tile-header">
+                        <h1><strong>教育经历</strong> </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- tile -->
+                            <section class="tile color transparent-white">
+                                {include file="customer/education" /}
+                            </section>
+                            <!-- /tile -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+            {/empty}
+            <!--添加业务业绩按钮-->
+            <div class="col-md-12">
+                <section class="tile color transparent-white">
+                    <div class="tile-header">
+                        <h1><strong><a href="{:url('business/add',array('student_id'=>$res.id,'business_id'=>2))}"><button class="btn btn-greensea btn-lg">添加业务</button></a></strong> </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- tile -->
+                            <section class="tile color transparent-white">
+                                {include file="business/business_list" /}
+                            </section>
+                            <!-- /tile -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-12">
+                <section class="tile color transparent-white">
+                    <div class="tile-header">
+                        <h1><strong><a href="{:url('performance/add',array('student_id'=>$res.id,'performance_id'=>1))}"><button class="btn btn-greensea btn-lg">添加业绩</button></a></strong> </h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- tile -->
+                            <section class="tile color transparent-white">
+                                {include file="performance/performance_list" /}
+                            </section>
+                            <!-- /tile -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- /content container -->
+</div>
+<!-- Page content end -->
+</div>
+<!-- Make page fluid-->
+</div>
+<!-- Wrap all page content end -->
+
+
+
+{include file="common/js" /}
+
+<script>
+    //ajx数据显示不出来
+    //chosen select input
+    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    //添加业务
+
+
+    $('#sub_service').change(function(){
+        $sub_service = $(this).val();
+        $.ajax({
+            type:"post",
+            url:"{:url('customer/getSub')}",
+            data:'sub_service='+$sub_service,
+            dataType:"json",
+            success:function(data){
+                $('#service').html(data);
+            }
+        });
+    });
+
+    //根据城市自动填充省份和区域
+    $('#city').change(function(){
+        //得到城市的id
+        $city = $('#city').val();
+        $.ajax({
+            type:"post",
+            url:"{:url('customer/getProvince')}",
+            //参数
+            data:'city='+$city,
+            dataType:"json",
+            success:function(data){
+
+                $('#province').html(data);
+                $province = $('#province>input').val();
+                if($province){
+                    $.ajax({
+                        type:"post",
+                        url:"{:url('customer/getRegion')}",
+                        //参数
+                        data:'province='+$province,
+                        dataType:"json",
+                        success:function(data){
+                            $('#region').html(data);
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    $('#myonoffswitch1').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#export').removeClass('hidden');
+        }else{
+            $('#export').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch2').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#remind').removeClass('hidden');
+        }else{
+            $('#remind').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch3').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#marry').removeClass('hidden');
+        }else{
+            $('#marry').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch4').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#worker').removeClass('hidden');
+        }else{
+            $('#worker').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch5').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#reject').removeClass('hidden');
+        }else{
+            $('#reject').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch6').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#criminal').removeClass('hidden');
+        }else{
+            $('#criminal').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch7').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#education').removeClass('hidden');
+        }else{
+            $('#education').addClass('hidden');
+        }
+    });
+
+    $('#1').click(function(){
+        $(this).addClass('hidden');
+        $('#myonoffswitch3').prop('checked',true);
+        $('#marry').removeClass('hidden');
+    });
+    $('#2').click(function(){
+        $(this).addClass('hidden');
+        $('#myonoffswitch7').prop('checked',true);
+        $('#education').removeClass('hidden');
+    });
+    $('#3').click(function(){
+        $(this).addClass('hidden');
+        $('#myonoffswitch4').prop('checked',true);
+        $('#worker').removeClass('hidden');
+    });
+    //事件的动态追加和删除，利用事件委托
+    $('#marriage_history').change(function(){
+        v = $(this).val();
+        //如果是真
+        if(v == 1){
+            $('#has_marriage_history').removeClass('hidden');
+        }else{
+            $('#has_marriage_history').addClass('hidden');
+        }
+    });
+
+    $('#new_marriage').click(function(){
+        $('#extra_marriage_info').append(
+            "                                    <div class=\"row\">\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >前任姓名</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"marriage_history[pre_spouse_name][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >前任生日</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' style=\"text-align:left\" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name=\"marriage_history[pre_birthday][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >婚姻周期</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' placeholder='请填写信息或者日期区间' type='text' name=\"marriage_history[marriage_period][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" ></label>\n" +
+            "                                            <div class=\"col-lg-offset-6\">\n" +
+            "                                                <button type=\"button\" id=\"delete_new_marriage\" class=\"btn btn-danger\">移除一栏</button>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+    });
+    //删除按钮是一个点击事件，它是针对id=extra_marriage_info这个div来进行的操作，因为这个div下的事件是动态追加的，只有通过委任才能动态删除
+    $('#extra_marriage_info').on('click', "#delete_new_marriage", function(){
+        $(this).parent().parent().parent().remove();
+    });
+
+
+    ///////////////////////--------------工作经历---------------//////////////////////////////
+    $('#new_work').click(function(){
+        $('#extra_work_info').append(
+            "<div class=\"row\">\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >公司名称</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"work_history[name][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >公司地址</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"work_history[address][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >工作周期</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"work_history[time][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >职位</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"work_history[position][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" ></label>\n" +
+            "                                            <div class=\"col-lg-offset-6\">\n" +
+            "                                                <button type=\"button\" id=\"delete_new_work\" class=\"btn btn-danger\">删除一栏</button>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+    });
+    $('#extra_work_info').on('click', "#delete_new_work", function(){
+        $(this).parent().parent().parent().remove();
+    });
+
+
+    ///////////////////////--------------上学经历---------------//////////////////////////////
+    $('#new_education').click(function(){
+        $('#extra_education_info').append(
+            "                                   <div class=\"row\">\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >学校名称</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"education_history[name][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >学校地址</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"education_history[address][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >上学周期</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"education_history[time][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" >专业</label>\n" +
+            "                                            <div class=\"col-sm-8\">\n" +
+            "                                                <input class='form-control' type='text' name=\"education_history[program][]\"/>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                        <div class=\"form-group col-md-3\">\n" +
+            "                                            <label class=\"col-sm-4 control-label\" ></label>\n" +
+            "                                            <div class=\"col-lg-offset-6\">\n" +
+            "                                                <button type=\"button\" id=\"delete_new_education\" class=\"btn btn-danger\">删除一栏</button>\n" +
+            "                                            </div>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+    });
+    $('#extra_education_info').on('click', "#delete_new_education", function(){
+        $(this).parent().parent().parent().remove();
+    });
+</script>
+</body>
+</html>
+

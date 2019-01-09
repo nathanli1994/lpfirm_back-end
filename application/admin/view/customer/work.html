@@ -1,0 +1,32 @@
+
+<div class="tile-body color transparent-black rounded-corners">
+    <div class="table-responsive">
+        <table  class="table table-datatable table-custom" id="basicDataTable">
+            <thead>
+            <tr>
+
+                <th class="text-center">工作名称</th>
+                <th class="text-center">工作地址</th>
+                <th class="text-center">工作时间周期</th>
+                <th class="text-center">职位</th>
+                <th class="text-center">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach name="work_res" id="v"}
+            <tr>
+                <td class="text-center"><a href="{:url('customer/work_edit',array('id'=>$v['id']))}">{$v.name}</a></td>
+                <td class="text-center">{$v.address}</td>
+                <td class="text-center">{$v.time}</td>
+                <td class="text-center">{$v.position}</td>
+                <td class="text-center"><a class="btn btn-danger" href="{:url('customer/experience_del',array('id'=>$v['id'],'category_id'=>3))}">删除</a></td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- /tile body -->
+
+
+

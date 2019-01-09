@@ -1,0 +1,407 @@
+{include file="common/css" /}
+{include file="common/top" /}
+{include file="common/left" /}
+
+
+
+
+
+
+<!-- Page content -->
+<div id="content" class="col-md-12">
+    <!-- page header -->
+    <div class="pageheader">
+        <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 添加业务</h2>
+    </div>
+    <!-- /page header -->
+
+
+    <!-- content main container -->
+    <div class="main">
+        <!-- row -->
+        <div class="row">
+            <!-- col 12 -->
+            <div class="col-md-12">
+                <!-- tile -->
+                <section class="tile color transparent-white">
+                    <!-- tile header -->
+                    <div class="tile-header">
+                        <h1><strong>添加</strong></h1>
+                    </div>
+                    <!-- /tile header -->
+
+                    <!-- tile body -->
+                    <form method="post" action="{:url('business/add')}">
+                        <input type="text" class="form-control hidden" name="student_id" placeholder="客户id" value="{$student_res.id}">
+                        <input type="text" class="form-control hidden" name="customer_name" placeholder="客户名字" value="{$student_res.name}">
+                        <input type="text" class="form-control hidden" name="in_progress" placeholder="默认正在做的业务" value="1">
+
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">业务类别</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control"  name="business_type" id="business_type">
+                                                <option value=""> -- 请选择 -- </option>
+                                                <option value="签证相关">签证相关</option>
+                                                <option value="学校申请">学校申请</option>
+                                                <option value="移民相关">移民相关</option>
+                                                <option value="中国文件相关">中国文件相关</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">具体业务</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="subservice_name" id="subservice">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4 hidden" id="contact_with_schools">
+                                        <label class="col-sm-4 control-label">行政负责人</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control"  name="contact_with_schools">
+                                                <option value=""> -- 请选择 -- </option>
+                                                {volist name="user_res" id="v"}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {if condition="$Request.session.duty neq '销售'"}
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">签证进度</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="progress" id="progress">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4 hidden" id="progress2">
+                                        <label class="col-sm-4 control-label">小签进度</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="extra_progress" id="extra_progress">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {else/}
+                                    <div class="form-group col-md-4 hidden">
+                                        <label class="col-sm-4 control-label">签证进度</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="progress" id="progress">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4 hidden" id="progress2">
+                                        <label class="col-sm-4 control-label">小签进度</label>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" name="extra_progress" id="extra_progress">
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                        {if condition="$Request.session.name eq '许诺'"}
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >导单设置</label>
+                                        <ul class="inline">
+                                            <li >
+                                                <div class="onoffswitch labeled green">
+                                                    <input type="checkbox" name="is_export" class="onoffswitch-checkbox" id="myonoffswitch1" >
+                                                    <label class="onoffswitch-label" for="myonoffswitch1">
+                                                        <span class="onoffswitch-inner"></span>
+                                                        <span class="onoffswitch-switch"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="form-group col-md-4 hidden" id="export">
+                                        <label class="col-sm-4 control-label">接单人</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="export_to" >
+                                                <option selected value="">---请选择---</option>
+                                                {volist name="user_res" id="v"}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+
+
+
+
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row" id="add_remind">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">服务费</label>
+                                        <div class="col-sm-8" id="fees">
+                                            <input class='form-control' type='text'/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">邮寄费</label>
+                                        <div class="col-sm-8" id="post_fee">
+                                            <input class='form-control' type='text'/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">政府费</label>
+                                        <div class="col-sm-8" id="goverment_fee">
+                                            <input class='form-control' type='text'/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">可退款金额</label>
+                                        <div class="col-sm-8" id="refundable">
+                                            <input class='form-control' type='text'/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">不退款金额</label>
+                                        <div class="col-sm-8" id="non_refundable">
+                                            <input class='form-control' type='text'/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">负责销售</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="user" value="{$Request.session.name}" readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">首次缴费金额<span style="color: red">(*)</span></label>
+                                        <div class="col-sm-8" id="amount">
+                                            <input class='form-control' type='number' name="amount" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">首次缴费日期<span style="color: red">(*)</span></label>
+                                        <div class="col-sm-8" id="amount_date">
+                                            <input class='form-control' style="text-align:left;" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="amount_date" required/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">收款人<span style="color: red">(*)</span></label>
+                                        <div class="col-sm-8" id="amount_accept">
+                                            <select class="chosen-select chosen-transparent form-control" name="amount_accept" required>
+                                                <option selected value="">---请选择---</option>
+                                                {volist name="user_res" id="v"}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">缴费金额详情</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="amount_detail"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">特殊情况备注</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' name="special_detail"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row" >
+                                    <div class="form-group col-md-4"></div>
+                                    <div class="form-group col-md-4" >
+                                        <label class="col-sm-4 control-label"></label>
+                                        <div class="col-sm-8" id="buttons">
+                                            <button type="submit" class="btn btn-success">添加业务</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- /tile body -->
+                </section>
+                <!-- /tile -->
+            </div>
+            <!-- /col 12 -->
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /content container -->
+</div>
+<!-- Page content end -->
+</div>
+<!-- Make page fluid-->
+
+
+
+
+</div>
+<!-- Wrap all page content end -->
+{include file="common/js" /}
+
+<script>
+    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    //通过business_type获取subservice
+    $('#business_type').change(function(){
+        $business_type = $(this).val();
+        $.ajax({
+            type:"post",
+            url:"{:url('business/getSub')}",
+            data:'business_type='+$business_type,
+            dataType:"json",
+            success:function(data){
+                $('#subservice').html(data);
+            }
+        });
+    });
+
+
+
+
+
+    //通过subservice的值，获取对应的进度
+    $('#subservice').change(function(){
+        $subservice = $(this).val();
+        if($subservice == '学签和小签' || $subservice == '身份恢复和小签' || $subservice == '毕业工签和小签'){
+            $('#progress2').removeClass('hidden');
+        }else{
+            //这里导致的问题就是，如果一开始想选的是学签和小签，但是选错了，那么extra_progress就不会出现了
+            $('#progress2').remove();
+        }
+
+        if($subservice == '大学申请' || $subservice == 'college申请'){
+            $('#contact_with_schools').removeClass('hidden');
+        }else{
+            $('#contact_with_schools').addClass('hidden');
+        }
+
+        $.ajax({
+            type:"post",
+            url:"{:url('business/getProgress')}",
+            data:'subservice='+$subservice,
+            dataType:"json",
+            success:function(data){
+                if($subservice == '学签和小签' || $subservice == '身份恢复和小签' || $subservice == '毕业工签和小签'){
+                    $('#progress').html(data);
+                    $('#extra_progress').html(data);
+                }else{
+                    $('#progress').html(data);
+                }
+            }
+        });
+
+        $.ajax({
+            type:"post",
+            url:"{:url('business/getFees')}",
+            data:'subservice='+$subservice,
+            dataType:"json",
+            success:function(data){
+                $('#fees').html(data[0]);
+                $('#post_fee').html(data[1]);
+                $('#goverment_fee').html(data[2]);
+                $('#refundable').html(data[3]);
+                $('#non_refundable').html(data[4]);
+            }
+        });
+    });
+
+    $('#fees').bind('click',function(){
+        $('#fees>input').removeAttr('readonly');
+        $('#fees>input').val("");
+        $('#add_remind').append(
+            "                                       <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">服务费修改原因</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <input class='form-control' type='text' name='service_fee_change_reason' required/>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+        $(this).unbind('click');
+    });
+
+    $('#post_fee').bind('click',function(){
+        $('#post_fee>input').removeAttr('readonly');
+        $('#post_fee>input').val("");
+        $('#add_remind').append(
+            "                                       <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">邮寄费修改原因</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <input class='form-control' type='text' name='post_fee_change_reason' required/>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+        $(this).unbind('click');
+    });
+
+
+    //my script
+    $('#myonoffswitch1').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#export').removeClass('hidden');
+        }else{
+            $('#export').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch2').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#remind').removeClass('hidden');
+        }else{
+            $('#remind').addClass('hidden');
+        }
+    });
+    $('#myonoffswitch3').click(function(){
+
+        a = $(this).prop('checked');
+        if(a){
+            $('#extra_progress').removeClass('hidden');
+        }else{
+            $('#extra_progress').addClass('hidden');
+        }
+    });
+
+
+
+</script>
+</body>
+</html>
+
