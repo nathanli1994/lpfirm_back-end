@@ -63,9 +63,19 @@
                                         <label  class="col-sm-4 control-label">duty</label>
                                         <div class="col-sm-8">
                                             <select class="chosen-select chosen-transparent form-control"  name="duty">
-                                                <option value="文案">文案</option>
-                                                <option value="销售">销售</option>
-                                                <option value="前台">前台</option>
+                                                {if condition="$res.duty == '文案'"}
+                                                <option selected value="文案">文案</option>
+                                                <option  value="销售">销售</option>
+                                                <option  value="前台">前台</option>
+                                                {elseif condition="$res.duty == '销售'"/}
+                                                <option  value="文案">文案</option>
+                                                <option selected value="销售">销售</option>
+                                                <option  value="前台">前台</option>
+                                                {elseif condition="$res.duty == '前台'"/}
+                                                <option  value="文案">文案</option>
+                                                <option  value="销售">销售</option>
+                                                <option selected value="前台">前台</option>
+                                                {/if}
                                             </select>
                                         </div>
                                     </div>
@@ -75,8 +85,13 @@
                                         <label  class="col-sm-4 control-label">status</label>
                                         <div class="col-sm-8">
                                             <select class="chosen-select chosen-transparent form-control"  name="position_status">
-                                                <option value="0">全职</option>
-                                                <option value="1">兼职</option>
+                                                {if condition="$res.position_status == 0"}
+                                                <option selected value="0">有底薪</option>
+                                                <option value="1">无底薪</option>
+                                                {elseif condition="$res.position_status == 1"/}
+                                                <option  value="0">有底薪</option>
+                                                <option selected value="1">无底薪</option>
+                                                {/if}
                                             </select>
                                         </div>
                                     </div>

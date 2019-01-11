@@ -99,8 +99,8 @@
 									<th class="text-center">业务</th>
                                     <th class="text-center">护照到期日</th>
                                     <th class="text-center">签证到期日</th>
-                                    <th class="text-center">负责销售</th>
-                                    <th class="text-center">跟进人</th>
+                                    <th class="text-center">负责跟进人</th>
+                                    <th class="text-center">客户/单子来源</th>
 
                                     <th class="text-center">Action</th>
                                 </tr>
@@ -202,7 +202,7 @@
                                         {elseif condition="$v.is_export eq 0"/}
                                         <td class="text-center"><span class="label label-red">off</span></td>
                                         {else/}
-                                        <td class="text-center"><span class="label label-success">on</span><span class="label label-red">尚未设置执行人</span></td>
+                                        <td class="text-center"><span class="label label-success">on</span><span class="label label-red">尚未设置来源</span></td>
                                         {/if}
                                     {else/}
                                         {if condition="$v.is_export neq 0 and $v.export_to neq '0'"}

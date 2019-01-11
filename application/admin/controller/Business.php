@@ -1024,10 +1024,20 @@ class Business extends Base
                     unset($user_res[$k]);
                 }
             }
+
         }else{
-            $user_res = db('user')->where('position_name','like','%前台%')->select()->toArray();
+            $user_res = db('user')->where('duty','like','前台')->select()->toArray();
         }
         $this->assign('user_res',$user_res);
+
+        //接单人下来列表
+        $user_export_res = db('user')->select()->toArray();
+        foreach ($user_export_res as $k=>$v){
+            if($v['duty'] == '销售'){
+                $user_export[]['name'] = $v['name'];
+            }
+        }
+        $this->assign('user_export',$user_export);
         return view();
     }
 
@@ -1130,8 +1140,18 @@ class Business extends Base
             $input[] = "<input class='form-control' type='text' name='service_fee' value='{$res['fee']}' readonly/>";
             $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/>";
             $input[] = "<input class='form-control' type='text' name='goverment_fee' value='{$res['goverment_fee']}' readonly/>";
-            $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' readonly/>";
-            $input[] = "<input class='form-control' type='text' name='non_refundable' value='{$res['non_refundable']}' readonly/>";
+            if(!is_null($res['refundable'])){
+                $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' />";
+            }else{
+                $input[] = "<input class='form-control' type='text' name='refundable' value='0' />";
+            }
+
+            if(!is_null($res['non_refundable'])){
+                $input[] = "<input class='form-control' type='text' name='non_refundable' value='{$res['non_refundable']}' />";
+            }else{
+                $input[] = "<input class='form-control' type='text' name='non_refundable' value='0' />";
+            }
+
         }
         return json($input);
     }

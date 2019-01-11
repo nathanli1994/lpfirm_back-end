@@ -71,6 +71,7 @@ class Customer extends Base
             /*
              * 添加之前先判断客户是否存在，passport_number作为标识
              */
+
             $num = db('customer')->where('passport_number','=',$data['passport_number'])->count();
             if($num >0){
                 $this->error('客户已存在','customer/index');
@@ -85,6 +86,10 @@ class Customer extends Base
         $sub_service = db('subservice')->select()->toArray();
         $city_res = db('cities')->select()->toArray();
         $user_res = db('user')->select()->toArray();
+        foreach($user_res as $k=>$v){
+            unset($user_res[3]);
+            unset($user_res[4]);
+        }
         $visa_res = db('visatype')->select()->toArray();
         $this->assign('visa_res',$visa_res);
         $this->assign('sub_service',$sub_service);
