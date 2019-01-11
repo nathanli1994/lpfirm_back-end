@@ -270,6 +270,7 @@
 
 
 
+                                    <!--文案部分-->
                                     {if condition="$Request.session.duty != '销售'"}
                                     <div class="tile-body">
                                         <div class="form-horizontal">
@@ -288,7 +289,10 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
+
                                                 {empty name="$res.submit_time_visa"}
+                                                <!--/////-->
                                                 {else/}
                                                 <div class="form-group col-md-4">
                                                     <label class="col-sm-4 control-label">业务递交日期</label>
@@ -297,6 +301,7 @@
                                                     </div>
                                                 </div>
                                                 {/empty}
+
                                                 <div class="form-group col-md-4 hidden" id="submit_time_visa">
                                                     <label class="col-sm-4 control-label" >预约/递交时间</label>
                                                     <div class="col-sm-8">
@@ -305,7 +310,13 @@
                                                 </div>
                                                 {if condition="$res.subservice_name neq '美国旅游签证'"}
                                                 <div class="form-group col-md-4 hidden" id="expire_time_visa">
-                                                    <label class="col-sm-4 control-label" >签证获批至<span style="color: red;">(* 必填)</span></label>
+                                                    <label class="col-sm-4 control-label" >
+                                                        {if condition="$res.subservice_name neq '境外旅游签'"}
+                                                        签证获批至<span style="color: red;">(* 必填)</span>
+                                                        {else/}
+                                                        旅游签获批时间<span style="color: red;">(* 必填)</span>
+                                                        {/if}
+                                                    </label>
                                                     <div class="col-sm-8">
                                                         <input class='form-control' data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="expire_time_visa" id="visa_expire" value="{$res.expire_time_visa}"/>
                                                     </div>
@@ -343,6 +354,7 @@
                                         </div>
                                     </div>
                                     {else/}
+                                    <!--销售部分-->
                                     <div class="tile-body hidden">
                                         <div class="form-horizontal">
                                             <div class="row">
@@ -499,6 +511,7 @@
     //当页面加载完成后执行的函数。
     $(function($){
         $subservice = $('#subservice').find("option:selected").val();
+
         $business_id = $('form > input').val();
         if($subservice == '学签和小签' || $subservice == '身份恢复和小签' || $subservice == '毕业工签和小签'){
             $.ajax({

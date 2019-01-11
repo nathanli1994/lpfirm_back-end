@@ -194,15 +194,15 @@
                             <div class="form-horizontal">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label">首次缴费金额<span style="color: red">(*)</span></label>
+                                        <label class="col-sm-4 control-label">客户服务费缴费金额<span style="color: red">(*)</span></label>
                                         <div class="col-sm-8" id="amount">
                                             <input class='form-control' type='number' name="amount" required/>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label">首次缴费日期<span style="color: red">(*)</span></label>
+                                        <label class="col-sm-4 control-label">缴费日期<span style="color: red">(*)</span></label>
                                         <div class="col-sm-8" id="amount_date">
-                                            <input class='form-control' style="text-align:left;" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="amount_date" required/>
+                                            <input class='form-control' dir="ltr" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="amount_date" required/>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -341,34 +341,68 @@
         });
     });
 
+
     $('#fees').bind('click',function(){
         $('#fees>input').removeAttr('readonly');
-        $('#fees>input').val("");
+        $('#fees>input').val("0");
         $('#add_remind').append(
-            "                                       <div class=\"form-group col-md-4\">\n" +
+            "                                       <div class=\"form-group col-md-4\" id=\"service_fee_change_reason_control\">\n" +
             "                                        <label class=\"col-sm-4 control-label\">服务费修改原因</label>\n" +
             "                                        <div class=\"col-sm-8\">\n" +
-            "                                            <input class='form-control' type='text' name='service_fee_change_reason' required/>\n" +
+            "                                            <input class='form-control' type='text' name='service_fee_change_reason' required id=\"service_fee_change_reason\"/>\n" +
             "                                        </div>\n" +
             "                                    </div>"
         );
+        $('#service_fee_change_reason').bind('blur',function(){
+            $input = $('#service_fee_change_reason').val();
+            if($input == ""){
+                $('#service_fee_change_reason_control').remove();
+            }
+        });
         $(this).unbind('click');
     });
+
 
     $('#post_fee').bind('click',function(){
         $('#post_fee>input').removeAttr('readonly');
         $('#post_fee>input').val("");
         $('#add_remind').append(
-            "                                       <div class=\"form-group col-md-4\">\n" +
+            "                                       <div class=\"form-group col-md-4\" id=\"post_fee_change_control\">\n" +
             "                                        <label class=\"col-sm-4 control-label\">邮寄费修改原因</label>\n" +
             "                                        <div class=\"col-sm-8\">\n" +
-            "                                            <input class='form-control' type='text' name='post_fee_change_reason' required/>\n" +
+            "                                            <input class='form-control' type='text' name='post_fee_change_reason' required id=\"post_fee_change_reason\"/>\n" +
             "                                        </div>\n" +
             "                                    </div>"
         );
+        $('#post_fee_change_reason').bind('blur',function(){
+            $input = $('#post_fee_change_reason').val();
+            if($input == ""){
+                $('#post_fee_change_control').remove();
+            }
+        });
         $(this).unbind('click');
     });
 
+
+    $('#goverment_fee').bind('click',function(){
+        $('#goverment_fee>input').removeAttr('readonly');
+        $('#goverment_fee>input').val("0");
+        $('#add_remind').append(
+            "                                       <div class=\"form-group col-md-4\" id=\"goverment_fee_change_reason_control\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">政府费修改原因</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <input class='form-control' type='text' name='goverment_fee_change_reason' required id=\"goverment_fee_change_reason\"/>\n" +
+            "                                        </div>\n" +
+            "                                    </div>"
+        );
+        $('#goverment_fee_change_reason').bind('blur',function(){
+            $input = $('#goverment_fee_change_reason').val();
+            if($input == ""){
+                $('#goverment_fee_change_reason_control').remove();
+            }
+        });
+        $(this).unbind('click');
+    });
 
     //my script
     $('#myonoffswitch1').click(function(){

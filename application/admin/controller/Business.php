@@ -68,6 +68,14 @@ class Business extends Base
             unset($data['is_criminal']);
             unset($data['is_education']);
 
+            //将护照签证更新到同一天
+            if($data['subservice_name'] == '境外旅游签'){
+                //$ten_years_later = date('Y-m-d', strtotime ("+10 years", strtotime($data['expire_time_visa'])));
+                $business_res = db('business')->where('id','=',$data['id'])->find();
+                $customer_res = db('customer')->where('id','=',$business_res['student_id'])->find();
+                $passport_due = $customer_res['passport_due'];
+                db('customer')->where('id','=',$business_res['student_id'])->update(['visa_due'=>$passport_due]);
+            }
             //同步更新客人信息
             if($data['is_export'] !== 0 && $data['is_remind'] == 0){
                 if($data['subservice_name'] =='学签和小签' || $data['subservice_name'] =='身份恢复和小签' || $data['subservice_name'] =='毕业工签和小签'){

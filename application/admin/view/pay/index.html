@@ -95,17 +95,17 @@
                                     <th class="text-center hidden">id</th>
 
 
-                                    <th class="text-center ">Remaining服务费</th>
+                                    
                                     <th class="text-center ">服务费缴费金额</th>
                                     <th class="text-center ">服务费缴费时间</th>
 
 
-                                    <th class="text-center ">邮寄费</th>
+                                    
                                     <th class="text-center ">邮寄费缴费金额</th>
                                     <th class="text-center ">邮寄费缴费时间</th>
 
 
-                                    <th class="text-center ">政府费</th>
+                                    
                                     <th class="text-center ">政府费缴费金额</th>
                                     <th class="text-center ">政府费缴费时间</th>
 
@@ -120,7 +120,7 @@
                                     <td class="text-center hidden">{$v.id}</td>
 
 
-                                    <td class="text-center">$ {$v.service_fee}</td>
+                                    
                                     <td class="text-center">$ {$v.service_fee_amount}</td>
                                     <td class="text-center">
                                         {if condition="$v.service_fee_amount neq null && $v.service_fee_date eq null"}
@@ -131,12 +131,7 @@
                                     </td>
 
 
-                                    <td class="text-center">
-                                        {if condition="$v.post_fee eq null"}
-                                        {else/}
-                                        $ {$v.post_fee}
-                                        {/if}
-                                    </td>
+                                    
                                     <td class="text-center">
                                         {if condition="$v.post_fee_amount eq null"}
                                         {else/}
@@ -152,12 +147,7 @@
                                     </td>
 
 
-                                    <td class="text-center">
-                                        {if condition="$v.goverment_fee eq null"}
-                                        {else/}
-                                        $ {$v.goverment_fee}
-                                        {/if}
-                                    </td>
+                                    
                                     <td class="text-center">
                                         {if condition="$v.goverment_fee_amount eq null"}
                                         {else/}

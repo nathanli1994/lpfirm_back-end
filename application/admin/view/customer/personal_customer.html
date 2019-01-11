@@ -96,6 +96,7 @@
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">姓名</th>
                                     <th class="text-center">生日</th>
+									<th class="text-center">业务</th>
                                     <th class="text-center">护照到期日</th>
                                     <th class="text-center">签证到期日</th>
                                     <th class="text-center">负责销售</th>
@@ -113,71 +114,85 @@
                                     <td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center"><a href="{:url('customer/edit',array('id'=>$v['id']))}">{$v.name}</a></td>
                                     <td class="text-center">{$v.dob}</td>
+									<td class="text-center">{$v.sub_service}</td>
 
 
-                                    {if condition="$v.passport_due_diff > 180"}
-                                    <td class="text-center"><span class="label">{$v.passport_due}</span></td>
-                                    {elseif condition="(0<$v.passport_due_diff) and ($v.passport_due_diff <= 90)"/}
-                                    <td class="text-center">
-                                        {if condition="$v.passport_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-cyan">{$v.passport_due}</span>
-                                        {/if}
-                                    </td>
-                                    {elseif condition="(-30<$v.passport_due_diff) and ($v.passport_due_diff <= 0)"/}
-                                    <td class="text-center">
-                                        {if condition="$v.passport_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-orange">{$v.passport_due}</span>
-                                        {/if}
-                                    </td>
+									{if condition="$v.sub_service eq '境外旅游签'"}
+                                        <td class="text-center">{$v.passport_due}&nbsp;&nbsp;<i class="fa fa-check-circle" style="color: green"></i></td>
                                     {else/}
-                                    <td class="text-center">
-                                        {if condition="$v.passport_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-danger">{$v.passport_due}</span>
-                                        {/if}
-                                    </td>
-                                    {/if}
+										{if condition="$v.passport_due_diff > 180"}
+										<td class="text-center"><span class="label">{$v.passport_due}</span></td>
+										{elseif condition="(0<$v.passport_due_diff) and ($v.passport_due_diff <= 90)"/}
+										<td class="text-center">
+											{if condition="$v.passport_progress =='申请递交'"}
+											<span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-cyan">{$v.passport_due}</span>
+											{/if}
+										</td>
+										{elseif condition="(-30<$v.passport_due_diff) and ($v.passport_due_diff <= 0)"/}
+										<td class="text-center">
+											{if condition="$v.passport_progress =='申请递交'"}
+											<span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-orange">{$v.passport_due}</span>
+											{/if}
+										</td>
+										{else/}
+										<td class="text-center">
+											{if condition="$v.passport_progress =='申请递交'"}
+											<span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-danger">{$v.passport_due}</span>
+											{/if}
+										</td>
+										{/if}
+									{/if}
 
 
-                                    {if condition="$v.visa_due_diff > 90"}
-                                    <td class="text-center"><span class="label">{$v.visa_due}</span></td>
-                                    {elseif condition="(0<$v.visa_due_diff) and ($v.visa_due_diff < 90)"/}
-                                    <td class="text-center">
-                                        {if condition="$v.visa_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-cyan">{$v.visa_due}</span>
-                                        {/if}
-                                    </td>
-                                    {elseif condition="($v.visa_due_diff < 0) and ($v.visa_due_diff >= -90)"/}
-                                    <td class="text-center">
-                                        {if condition="$v.visa_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-orange">{$v.visa_due}</span>
-                                        {/if}
-                                       
-                                    </td>
+
+									<!--签证-->
+                                    {if condition="$v.sub_service eq '境外旅游签'"}
+                                        <td class="text-center">{$v.visa_due}&nbsp;&nbsp;<i class="fa fa-times-circle" style="color: red"></i></td>
                                     {else/}
-                                    <td class="text-center">
-                                        {if condition="$v.visa_progress =='申请递交'"}
-                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-										<span class="label label-success">申请递交</span>
-                                        {else/}
-                                        <span class="label label-danger">{$v.visa_due}</span>
-                                        {/if}
-                                    </td>
-                                    {/if}
+										{if condition="$v.visa_due_diff > 90"}
+										<td class="text-center"><span class="label">{$v.visa_due}</span></td>
+										{elseif condition="(0<$v.visa_due_diff) and ($v.visa_due_diff < 90)"/}
+										<td class="text-center">
+											{if condition="$v.visa_progress =='申请递交'"}
+											<span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-cyan">{$v.visa_due}</span>
+											{/if}
+										</td>
+										{elseif condition="($v.visa_due_diff < 0) and ($v.visa_due_diff >= -90)"/}
+										<td class="text-center">
+											{if condition="$v.visa_progress =='申请递交'"}
+											<span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-orange">{$v.visa_due}</span>
+											{/if}
+										   
+										</td>
+										{else/}
+										<td class="text-center">
+											{if condition="$v.visa_progress =='申请递交'"}
+											<span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+											<span class="label label-success">申请递交</span>
+											{else/}
+											<span class="label label-danger">{$v.visa_due}</span>
+											{/if}
+										</td>
+										{/if}
+									{/if}
+									
+									
+									
 
                                     <td class="text-center">{$v.user}</td>
 

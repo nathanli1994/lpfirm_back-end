@@ -97,6 +97,7 @@
                                     <th class="text-center">客户姓名</th>
                                     <th class="text-center">所办业务</th>
                                     <th class="text-center">所收费用</th>
+                                    <th class="text-center">首次缴费日期</th>
                                     <th class="text-center">进度</th>
                                     <th class="text-center">递交 / 预约时间</th>
                                     <th class="text-center">负责销售</th>
@@ -132,6 +133,8 @@
 
                                     <td class="text-center">{$v.subservice_name}</td>
                                     <td class="text-center">{$v.service_fee}</td>
+                                    <td class="text-center">{$v.amount_date}</td>
+
 
                                     {if condition="($v.subservice_name eq '学签和小签') || ($v.subservice_name eq '身份恢复和小签') || ($v.subservice_name eq '毕业工签和小签')"}
                                     <td class="text-center">

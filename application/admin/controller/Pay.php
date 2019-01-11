@@ -54,7 +54,12 @@ class Pay extends Base
         //存在首次缴费
         if(!empty($res['amount'])){
             $res['service_fee_remain'] = $res['service_fee'] - $res['amount'];
+            $res['post_fee_remain'] = 0;
+            $res['goverment_fee_remain'] = 0;
+
             $res['service_amount'] = $res['amount'];
+            $res['post_amount'] = $res['post_fee'];
+            $res['goverment_amount'] = $res['goverment_fee'];
         }else{
             $res['service_fee_remain'] = $res['service_fee'];
         }//最终得到服务费的实际剩余

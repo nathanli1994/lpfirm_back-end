@@ -65,6 +65,10 @@
                                     </div>
                                 </div>
 
+
+
+
+                                <!--服务费-->
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">业务应缴服务费</label>
@@ -96,6 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--邮寄费-->
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">业务应缴邮寄费</label>
@@ -127,6 +132,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--政府费-->
                                 <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">业务应缴政府费</label>
@@ -160,7 +166,9 @@
                                 </div>
 
                                 <br><br><br>
-                                <!--服务费-->
+
+
+                                <!--服务费输入-->
                                 {if condition="$res.service_fee_remain neq 0"}
                                 <div class="row">
                                     <div class="form-group col-md-4">
@@ -233,7 +241,7 @@
                                 </div>
                                 {/if}
 
-                                <!--政府费-->
+                                <!--政府费输入-->
                                 {if condition="$res.goverment_fee_remain neq 0"}
                                 <div class="row">
                                     <div class="form-group col-md-4">
@@ -306,7 +314,7 @@
                                 </div>
                                 {/if}
 
-                                <!--邮寄费-->
+                                <!--邮寄费输入-->
                                 {if condition="$res.post_fee_remain neq 0"}
                                 <div class="row">
                                     <div class="form-group col-md-4">
