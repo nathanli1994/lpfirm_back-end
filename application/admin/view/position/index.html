@@ -89,7 +89,7 @@
                     <div class="tile-body color transparent-black rounded-corners">
 
                         <div class="table-responsive">
-                            <table  class="table table-datatable table-custom" id="basicDataTable">
+                            <table  class="table table-datatable table-custom" id="basicDataTable" >
                                 <thead>
                                 <tr>
                                     <th class="text-center">顺序</th>
@@ -100,7 +100,7 @@
                                     <th class="text-center">操作</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="sortable">
 
                                 {volist name="res" id="v"}
                                 <tr>
@@ -206,6 +206,8 @@
 
 <script src="/static/assets/js/minimal.min.js"></script>
 
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
 <script>
     $(function(){
 
@@ -261,6 +263,7 @@
             //     null,
             //     null
             // ],
+            "iDisplayLength":100,
             "fnInitComplete": function(oSettings, json) {
                 $('.dataTables_filter input').attr("placeholder", "Search");
             }
@@ -268,9 +271,11 @@
 
         //initialize chosen
         $('.dataTables_length select').chosen({disable_search_threshold: 10});
+    });
 
-    })
-
+    $(document).ready(function(){
+        $( "#sortable" ).sortable();
+    });
 </script>
 </body>
 </html>

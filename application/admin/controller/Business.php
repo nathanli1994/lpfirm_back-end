@@ -1282,4 +1282,69 @@ class Business extends Base
 
 
 
+
+
+
+    public function college_program_add(){
+        $student_id = input('student_id');
+
+        if(request()->isPost()){
+            $data = input('post.');
+            $data['create_time'] = time();
+            db('college')->insert($data);
+            $this->redirect('business/personal_business');
+        }
+        $this->assign('student_id',$student_id);
+        return view();
+    }
+
+
+    public function college_program_list(){
+        $student_id = input('student_id');
+        $count = db('college')->where('student_id','=',$student_id)->count();
+        if($count == 0){
+            $this->redirect('business/personal_business');
+        }else{
+            if($count == 1){
+                $one_res = db('college')->where('student_id','=',$student_id)->find();
+                $res[] = $one_res;
+            }else{
+                $res = db('college')->where('student_id','=',$student_id)->select()->toArray();
+            }
+
+            $this->assign('res',$res);
+        }
+
+        return view();
+    }
+
+
+    public function edit_college_status(){
+
+        if(request()->isPost()){
+            $data = input('post.');
+            db('college')->where('id','=',$data['id'])->update($data);
+            $this->redirect('business/personal_business');
+        }
+        $id = input('id');
+        $college_res = db('college')->where('id','=',$id)->find();
+        $this->assign('res',$college_res);
+        return view();
+    }
+    public function college_set_final_decision(){
+        $id = input('id');
+        $college_res = db('college')->where('id','=',$id)->find();
+        $business_res = db('business')->where('id','=',$college_res['student_id'])->find();
+        $customer_res = db('customer')->where('id','=',$business_res['student_id'])->find();
+        db('college')->where('id','=',$id)->update(['final_decision'=>1]);
+        $this->success('客户：' . $customer_res['name'] . '，最终决定：' . $college_res['schools']);
+    }
+    public function college_cancel_final_decision(){
+        $id = input('id');
+        $college_res = db('college')->where('id','=',$id)->find();
+        $business_res = db('business')->where('id','=',$college_res['student_id'])->find();
+        $customer_res = db('customer')->where('id','=',$business_res['student_id'])->find();
+        db('college')->where('id','=',$id)->update(['final_decision'=>0]);
+        $this->success('客户：' . $customer_res['name'] . '，取消决定：' . $college_res['schools']);
+    }
 }

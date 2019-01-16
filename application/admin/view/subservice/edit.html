@@ -69,9 +69,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label">排序</label>
+                                        <label class="col-sm-4 control-label">解释信费用</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="sort" value="{$res.sort}">
+                                            {empty name="$res.explain_fee"}
+                                            <input type="number" class="form-control" name="explain_fee" value="0">
+                                            {else/}
+                                            <input type="number" class="form-control" name="explain_fee" value="{$res.explain_fee}">
+                                            {/empty}
                                         </div>
                                     </div>
                                 </div>

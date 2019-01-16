@@ -167,6 +167,16 @@
                                         &nbsp;&nbsp;<span class="label label-cyan"> done</span>
                                         {/if}
                                     </td>
+                                    {elseif condition="($v.subservice_name eq 'college申请') || ($v.subservice_name eq '大学申请')"/}
+                                        {if condition="$v.progress eq '申请递交'"}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;{$v.submit_time_visa}&nbsp;&nbsp;<span class="label label-success">in progress</span></td>
+                                        {elseif condition="$v.progress eq '收集材料'"/}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-danger">not in progress</span></td>
+                                        {elseif condition="($v.progress eq '申请获批') or ($v.progress eq '申请被拒') or ($v.progress eq 'offer获得')"/}
+                                        <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-success">done</span></td>
+                                        {else/}
+                                        <td class="text-center">收集材料&nbsp;&nbsp;<span class="label label-danger">not in progress</span></td>
+                                        {/if}
                                     {else/}
                                         {if condition="$v.progress eq '申请递交'"}
                                         <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-success">in progress</span></td>
@@ -252,6 +262,9 @@
                                             {if condition="$v.subservice_name eq '大学申请'"}
                                             <a class="btn btn-cyan btn-sm" href="{:url('business/university_program_add',array('student_id'=>$v.id))}">添加专业</a>
                                             <a class="btn btn-success btn-sm" href="{:url('business/university_program_list',array('student_id'=>$v.id))}">查看专业</a>
+                                            {elseif condition="$v.subservice_name eq 'college申请'"}
+                                            <a class="btn btn-cyan btn-sm" href="{:url('business/college_program_add',array('student_id'=>$v.id))}">添加专业</a>
+                                            <a class="btn btn-success btn-sm" href="{:url('business/college_program_list',array('student_id'=>$v.id))}">查看专业</a>
                                             {/if}
                                             <a class="btn btn-danger btn-sm" href="{:url('business/delete',array('id'=>$v.id))}">删除</a>
                                             {/if}
@@ -387,6 +400,7 @@
             "oLanguage": {
                 "sSearch": "搜 索 ："
             },
+            "iDisplayLength":100,
             "aaSorting": [[0,'desc']],
             "fnInitComplete": function(oSettings, json) {
                 $('.dataTables_filter input').attr("placeholder", "Search");

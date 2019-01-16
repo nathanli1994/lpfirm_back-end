@@ -92,11 +92,12 @@
                             <table  class="table table-datatable table-custom" id="basicDataTable">
                                 <thead>
                                 <tr>
-									<th class="text-center">排序</th>
+									<th class="text-center hidden">id排序</th>
                                     <th class="text-center">业务类型</th>
                                     <th class="text-center">具体业务</th>
-                                    <th class="text-center">退款金额</th>
-                                    <th class="text-center">不退款金额</th>
+                                    <th class="text-center hidden">退款金额</th>
+                                    <th class="text-center hidden">不退款金额</th>
+                                    <th class="text-center">解释信费</th>
                                     <th class="text-center">服务费</th>
                                     <th class="text-center">邮寄费</th>
                                     <th class="text-center">政府费</th>
@@ -108,11 +109,16 @@
 
                                 {volist name="res" id="v"}
                                 <tr>
-									<td class="text-center">{$v.sort}</td>
+									<td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center">{$v.business_type}</td>
                                     <td class="text-center">{$v.name}</td>
-                                    <td class="text-center">{$v.refundable}</td>
-                                    <td class="text-center">{$v.non_refundable}</td>
+                                    <td class="text-center hidden">{$v.refundable}</td>
+                                    <td class="text-center hidden">{$v.non_refundable}</td>
+                                    {empty name="$v.explain_fee"}
+                                    <td class="text-center">$ 0</td>
+                                    {else/}
+                                    <td class="text-center">{$v.explain_fee}</td>
+                                    {/empty}
 
                                     {if empty($v.fee)}
                                     <td class="text-center">$ 0</td>
@@ -269,6 +275,7 @@
             "oLanguage": {
                 "sSearch": "搜 索 ："
             },
+            "iDisplayLength":100,
             "aaSorting": [ [0,'asc']],
             "fnInitComplete": function(oSettings, json) {
                 $('.dataTables_filter input').attr("placeholder", "Search");
