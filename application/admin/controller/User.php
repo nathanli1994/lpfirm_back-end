@@ -9,6 +9,7 @@
 namespace app\admin\controller;
 
 
+
 class User extends Base
 {
     public function index(){
@@ -116,6 +117,78 @@ class User extends Base
             $position_people[$k]['count'] = db('user')->where('position_name','like',$v['name'])->count();
         }
         $this->assign('position_people',$position_people);
+        return view();
+    }
+
+
+
+    public function showUserByPosition(){
+        $position = input('position');
+        $this->assign('position',$position);
+        $res = db('user')->where('position_name','=',$position)->select()->toArray();
+        $this->assign('res',$res);
+        return view();
+    }
+
+
+    public function review(){
+        $position_res = db('position')->select()->toArray();
+        foreach ($position_res as $k=>$v){
+            $position_name[]['name'] = $v['name'];
+        }
+        foreach ($position_name as $k=>$v){
+            $position_people[$k]['name'] = $v['name'];
+            $position_people[$k]['count'] = db('user')->where('position_name','like',$v['name'])->count();
+        }
+        $this->assign('position_people',$position_people);
+
+        $customer = db('customer')->column('create_time');
+        $business = db('business')->column('create_time');
+
+        $this_year = (int)(date('Y'));
+        $last_year = $this_year - 1;
+
+        //拿到今年的客人
+        for($c=0;$c<count($customer);$c++){
+            if(date('Y',$customer[$c]) == $this_year){
+                $this_year_customer[] = $customer[$c];
+            }
+        }
+        //拿到去年的客人
+        for($c=0;$c<count($customer);$c++){
+            if(date('Y',$customer[$c]) == $last_year){
+                $last_year_customer[] = $customer[$c];
+            }
+        }
+
+        $timer1 = 0;
+        for($m=1;$m<=12;$m++){
+            //统计当前年份，每个月有多少客人
+            for ($a=0;$a<count($this_year_customer);$a++){
+                if(date('m',$this_year_customer[$a]) == $m){
+                    $timer1 += 1;
+                }
+            }
+            $res1[$m]['this_year_people_per_month'] = $timer1;
+            $res1[$m]['month'] = $m;
+            $timer1 = 0;
+        }
+
+        $timer2 = 0;
+        for($m=1;$m<=12;$m++){
+            //统计去年，每个月有多少客人
+            for ($c=0;$c<count($last_year_customer);$c++){
+                if(date('m',$last_year_customer[$c]) == $m){
+                    $timer2 +=1;
+                }
+            }
+            $res1[$m]['last_year_people_per_month'] = $timer2;
+            $timer2 = 0;
+        }
+
+        $this->assign('res1',$res1);
+        $this->assign('this_year',$this_year);
+        $this->assign('last_year',$last_year);
         return view();
     }
 }
