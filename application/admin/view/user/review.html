@@ -63,13 +63,13 @@
                             </tr>
                             </thead>
                             <tbody>
-
+                            {volist name="res2" id="v"}
                             <tr>
-                                <th>JAN</th>
-                                <td>10</td>
-                                <td>10</td>
+                                <th>{$v.month} 月</th>
+                                <td>{$v.this_year_people_per_month}</td>
+                                <td>{$v.last_year_people_per_month}</td>
                             </tr>
-
+                            {/volist}
                             </tbody>
                         </table>
 
@@ -131,7 +131,7 @@
 
                     <!-- tile header -->
                     <div class="tile-header">
-                        <h1><strong>Pie</strong> Chart</h1>
+                        <h1><strong>日收入</strong> 统计</h1>
                         <div class="controls">
                             <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
                             <a href="#" class="remove"><i class="fa fa-times"></i></a>
@@ -146,23 +146,26 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th style="color : #a2d200;">Sales this month</th>
-                                <th style="color : #ffc100;">New Orders</th>
-                                <th style="color : #ff4a43;">New Users</th>
-                                <th style="color : #22beef;">Visits this month</th>
+                                <th style="color : #b8ff00;">应收</th>
+                                <th style="color : #ffc100;">实收</th>
+                                <th style="color : #ff4a43;">差额</th>
+
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <th></th>
-                                <td>20</td>
-                                <td>50</td>
-                                <td>10</td>
-                                <td>20</td>
+                                <td>{$sum_ideal}</td>
+                                <td>{$sum_real}</td>
+                                <td>{$short}</td>
                             </tr>
                             </tbody>
                         </table>
 
+                        <div>
+                            <span style="color : #000000;">应收：</span><span style="color : #b8ff00;">    ${$sum_ideal}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <span style="color : #000000;">实收：</span><span style="color : #ffc100;">    ${$sum_real}</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            <span style="color : #000000;">差额：</span><span style="color : #ff4a43;">    ${$short}</span>
                     </div>
                     <!-- /tile body -->
 
@@ -179,8 +182,7 @@
 
                     <!-- tile header -->
                     <div class="tile-header">
-                        <h1><strong>Pie</strong> Chart</h1>
-                        <span class="note">Custom Labels</span>
+                        <h1><strong>{$month}</strong> 统计</h1>
                         <div class="controls">
                             <a href="#" class="refresh"><i class="fa fa-refresh"></i></a>
                             <a href="#" class="remove"><i class="fa fa-times"></i></a>
@@ -195,25 +197,17 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th style="color : #a2d200;">System space</th>
-                                <th style="color : #ffc100;">Free Space</th>
-                                <th style="color : #ff4a43;">Applications</th>
-                                <th style="color : #22beef;">Music</th>
-                                <th style="color : #16a085;">Pictures</th>
-                                <th style="color : #1693A5;">Movies</th>
-                                <th style="color : #555;">Other</th>
+                                <th style="color : #a2d200;">总计</th>
+                                <th style="color : #ffc100;">业务</th>
+                                <th style="color : #ff4a43;">业绩</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <th></th>
-                                <td>2</td>
-                                <td>44</td>
-                                <td>11</td>
-                                <td>15</td>
-                                <td>10</td>
-                                <td>5</td>
-                                <td>13</td>
+                                <td>10000</td>
+                                <td>{$sum_month_income}</td>
+                                <td>10000</td>
                             </tr>
                             </tbody>
                         </table>
@@ -447,27 +441,27 @@
             });
         };
 
-        // // Pie Chart custom labels
-        //
-        // $('.custom-labels').each(function () {
-        //     var el= $(this);
-        //     var data = el.data();
-        //     var colors = [];
-        //     var info = [];
-        //     var item = '';
-        //
-        //     $(data.targetFlot).find('thead th:not(:first)').each(function() {
-        //         colors.push($(this).css('color'));
-        //         info.push($(this).text());
-        //     });
-        //
-        //     for(var i=0;i<info.length;i++){
-        //         item += '<li><span class="badge badge-outline" style="border-color:' + colors[i] + '"></span>' + info[i] + ' ' + '<small>' + $(data.targetFlot).find("tbody td").eq(i).text() + '%' + '</small>' + '</li>';
-        //     }
-        //
-        //     el.append('<ul class="nolisttypes chart-legend">'+item+'</ul>');
-        //
-        // });
+        // Pie Chart custom labels
+
+        $('.custom-labels').each(function () {
+            var el= $(this);
+            var data = el.data();
+            var colors = [];
+            var info = [];
+            var item = '';
+
+            $(data.targetFlot).find('thead th:not(:first)').each(function() {
+                colors.push($(this).css('color'));
+                info.push($(this).text());
+            });
+
+            for(var i=0;i<info.length;i++){
+                item += '<li><span class="badge badge-outline" style="border-color:' + colors[i] + '"></span>' + info[i] + ' ' + '<small>' + $(data.targetFlot).find("tbody td").eq(i).text() + 'CAD' + '</small>' + '</li>';
+            }
+
+            el.append('<ul class="nolisttypes chart-legend">'+item+'</ul>');
+
+        });
 
         initializeFlot();
     })
