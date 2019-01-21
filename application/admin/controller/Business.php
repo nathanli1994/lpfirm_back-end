@@ -1136,6 +1136,17 @@ class Business extends Base
         if(request()->isPost()){
             $subservice = input('subservice');
             $res = db('subservice')->where('name','like',$subservice)->find();
+            foreach ($res as $k=>$v){
+                if(empty($res['fee'])){
+                    $res['fee'] =0;
+                }
+                if(empty($res['post_fee'])){
+                    $res['post_fee'] =0;
+                }
+                if(empty($res['goverment_fee'])){
+                    $res['goverment_fee'] =0;
+                }
+            }
             $input = [];
             $input[] = "<input class='form-control' type='text' name='service_fee' value='{$res['fee']}' readonly/>";
             $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/>";
