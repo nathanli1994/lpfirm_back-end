@@ -406,6 +406,8 @@
                 $('.dataTables_filter input').attr("placeholder", "Search");
             }
         });
+        var downloadLink = '<a href="{:url(\'business/downloadExcel\',array(\'level\'=>\'personal\'))}" class="btn btn-green btn-sm add-row">个人业务报表</a>';
+        $('#basicDataTable').append(downloadLink);
 
         //initialize chosen
         $('.dataTables_length select').chosen({disable_search_threshold: 10});
