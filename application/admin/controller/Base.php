@@ -10,6 +10,9 @@ namespace app\admin\controller;
 
 
 use think\Controller;
+use PHPExcel_IOFactory;
+use PHPExcel;
+use PHPExcel_Writer_Excel5;
 
 class Base extends Controller
 {
@@ -122,6 +125,63 @@ class Base extends Controller
             $data['in_progress'] = 1;
         }
         return $data;
+    }
+
+
+
+    public function exportExcel($list,$filename,$indexKey=array(),$level=''){
+        // dirname(__FILE__)得到当前文件所在目录名字
+//        require_once dirname(dirname(__FILE__)) . '/Lib/PHPExcel/PHPExcel/PHPExcel/IOFactory.php';
+//        require_once dirname(dirname(__FILE__)) . '/Lib/PHPExcel/PHPExcel/PHPExcel.php';
+//        require_once dirname(dirname(__FILE__)) . '/Lib/PHPExcel/PHPExcel/PHPExcel/Writer/Excel2007.php';
+
+        //excel的A-Z的部分
+        $header_arr = array('A','C','E','G','I');
+
+        if($level == 'personal'){
+            $template_personal = dirname(dirname(dirname(dirname(__FILE__)))).'/vendor/phpoffice/personal.xlsx';			//使用模板
+            $objPHPExcel = PHPExcel_IOFactory::load($template_personal);  	//加载excel文件,设置模板
+        }else{
+            $template_company = dirname(dirname(dirname(dirname(__FILE__)))).'/vendor/phpoffice/company.xlsx';			//使用模板
+            $objPHPExcel = PHPExcel_IOFactory::load($template_company);  	//加载excel文件,设置模板
+        }
+
+
+
+        $objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);	//设置保存版本格式
+
+        //接下来就是写数据到表格里面去
+        $objActSheet = $objPHPExcel->getActiveSheet();
+        $objActSheet->setCellValue('A4',  "公司名称：加诺咨询");
+
+        if($level == 'personal'){
+            $objActSheet->setCellValue('C4',  "员工姓名：" . session('name'));
+        }
+
+        $objActSheet->setCellValue('H4',  "导出时间：".date('Y-m-d'));
+        $i = 8;
+        foreach ($list as $row) {//list里的每条数据是一行
+            foreach ($indexKey as $key => $value){
+                //这里是设置单元格的内容
+                $objActSheet->setCellValue($header_arr[$key].$i,$row[$value]);
+            }
+            $i++;
+        }
+
+        // 1.保存至本地Excel表格
+        //$objWriter->save($filename.'.xls');
+
+        // 2.接下来当然是下载这个表格了，在浏览器输出就好了
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control:must-revalidate, post-check=0, pre-check=0");
+        header("Content-Type:application/force-download");
+        header("Content-Type:application/vnd.ms-execl");
+        header("Content-Type:application/octet-stream");
+        header("Content-Type:application/download");;
+        header('Content-Disposition:attachment;filename="'.$filename.'.xls"');
+        header("Content-Transfer-Encoding:binary");
+        $objWriter->save('php://output');
     }
 
 }
