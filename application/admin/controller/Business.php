@@ -968,6 +968,12 @@ class Business extends Base
             }
             db('customer')->where('id','=',$student_id)->update($customer_update_info);
 
+
+            if($data['service_fee'] == 0 && ($data['subservice_name'] == 'college申请' || $data['subservice_name'] == '大学申请')){
+                $value = $data['amount'];
+                $data['service_fee'] = $value;
+            }
+            dump($data);die;
             $res = db('business')->insert($data);
             if($res){
 
@@ -1357,5 +1363,35 @@ class Business extends Base
         $customer_res = db('customer')->where('id','=',$business_res['student_id'])->find();
         db('college')->where('id','=',$id)->update(['final_decision'=>0]);
         $this->success('客户：' . $customer_res['name'] . '，取消决定：' . $college_res['schools']);
+    }
+
+
+
+
+    public function downloadExcel(){
+        $level = input('level');
+        $user_name = session('name');
+
+        if($level == 'personal'){
+            $res = db('business')->where('user','like',$user_name)->whereTime('create_time','month')->select()->toArray();
+            $filename = $user_name . '的' . date('n') . '月业务报表';
+        }else{
+            $res = db('business')->whereTime('create_time','month')->select()->toArray();
+            $filename =  '加诺咨询' . date('n') . '月业务报表';
+        }
+
+        if(empty($res)){
+            $this->error('不符合导出标准，因此不能进行Excel导出','business/personal_business');
+        }
+        foreach ($res as $k=>$v){
+            $list[$k]['客户姓名'] = $v['customer_name'];
+            $list[$k]['业务名称'] = $v['subservice_name'];
+            $list[$k]['收费金额'] = $v['service_fee'];
+            $list[$k]['负责销售'] = $v['user'];
+            $list[$k]['业务进度'] = $v['progress'];
+        }
+
+        $indexkey = array('客户姓名','业务名称','收费金额','负责销售','业务进度');
+        $this->exportExcel($list,$filename,$indexkey,$level);
     }
 }
