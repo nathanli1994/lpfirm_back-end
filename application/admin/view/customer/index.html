@@ -95,12 +95,12 @@
                                     <!--<th class="text-center">头像</th>-->
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">姓名</th>
-                                    <th class="text-center">生日</th>
+                                    <th class="text-center">电话</th>
                                     <th class="text-center">业务</th>
                                     <th class="text-center">护照到期日</th>
                                     <th class="text-center">签证到期日</th>
+                                    <th class="text-center">客户来源</th>
                                     <th class="text-center">负责跟进人</th>
-                                    <th class="text-center">客户/单子来源</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -112,7 +112,7 @@
                                     <!--<td class="text-center"><img src="/{$v.thumb_img}" /></td>-->
                                     <td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center"><a href="{:url('customer/edit',array('id'=>$v['id']))}">{$v.name}</a></td>
-                                    <td class="text-center">{$v.dob}</td>
+                                    <td class="text-center">{$v.phone}</td>
                                     <td class="text-center">{$v.sub_service}</td>
 
                                     <!--护照-->
@@ -201,9 +201,9 @@
                                     {if condition="$v.is_export neq 0 and $v.export_to neq '0'"}
                                     <td class="text-center">{$v.export_to}</td>
                                     {elseif condition="$v.is_export eq 0"/}
-                                    <td class="text-center"><span class="label label-red">off</span></td>
+                                    <td class="text-center"><span>{$v.user}</span></td>
                                     {else/}
-                                    <td class="text-center"><span class="label label-green">on</span><span class="label label-red">尚未设置来源</span></td>
+                                    <td class="text-center"><span class="label label-green">on</span><span class="label label-red">跟进人未选择</span></td>
                                     {/if}
 
 

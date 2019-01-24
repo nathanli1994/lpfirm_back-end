@@ -166,20 +166,25 @@
 
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label" >是否为他人导单</label>
+                                        <label class="col-sm-4 control-label" >是否设置客户来源</label>
                                         <ul class="inline">
                                             <li >
                                                 <div class="onoffswitch labeled green">
-                                                    {if condition="$res.is_export eq 1"}
-                                                    <input type="checkbox" name="is_export" class="onoffswitch-checkbox" id="myonoffswitch8" checked>
+                                                    {if condition="$res.vertified_by neq null"}
+                                                    <input type="checkbox" name="is_export" class="onoffswitch-checkbox" id="myonoffswitch8" checked onclick="return false;">
                                                     {else/}
-                                                    <input type="checkbox" name="is_export" class="onoffswitch-checkbox" id="myonoffswitch8" >
+                                                    <input type="checkbox" name="is_export" class="onoffswitch-checkbox" id="myonoffswitch8">
                                                     {/if}
                                                     <label class="onoffswitch-label" for="myonoffswitch8">
                                                         <span class="onoffswitch-inner"></span>
                                                         <span class="onoffswitch-switch"></span>
                                                     </label>
                                                 </div>
+                                                {if condition="$res.vertified_by neq null"}
+                                                <p><span class="label label-success"><i class="fa fa-exclamation-circle"></i>：来自{$res.user}导入已由本人认证</span></p>
+                                                {else/}
+                                                <p><span class="label label-success"><i class="fa fa-exclamation-circle"></i>：来自{$res.user}导入还未认证</span></p>
+                                                {/if}
                                             </li>
                                         </ul>
                                     </div>

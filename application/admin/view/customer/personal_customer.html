@@ -95,13 +95,12 @@
                                     <!--<th class="text-center">头像</th>-->
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">姓名</th>
-                                    <th class="text-center">生日</th>
+                                    <th class="text-center">电话</th>
 									<th class="text-center">业务</th>
                                     <th class="text-center">护照到期日</th>
                                     <th class="text-center">签证到期日</th>
                                     <th class="text-center">负责跟进人</th>
-                                    <th class="text-center">客户/单子来源</th>
-
+                                    <th class="text-center">客户来源</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -113,7 +112,7 @@
                                     <!--<td class="text-center"><img src="/{$v.thumb_img}" /></td>-->
                                     <td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center"><a href="{:url('customer/edit',array('id'=>$v['id']))}">{$v.name}</a></td>
-                                    <td class="text-center">{$v.dob}</td>
+                                    <td class="text-center">{$v.phone}</td>
 									<td class="text-center">{$v.sub_service}</td>
 
 
@@ -190,33 +189,29 @@
 										</td>
 										{/if}
 									{/if}
-									
-									
-									
+
+
+
+
 
                                     <td class="text-center">{$v.user}</td>
 
-                                    {if condition="$Request.session.sort <=2"}
-                                        {if condition="$v.is_export neq 0 and $v.export_to neq '0'"}
-                                        <td class="text-center">{$v.export_to}</td>
-                                        {elseif condition="$v.is_export eq 0"/}
-                                        <td class="text-center"><span class="label label-red">off</span></td>
-                                        {else/}
-                                        <td class="text-center"><span class="label label-success">on</span><span class="label label-red">尚未设置来源</span></td>
-                                        {/if}
+                                    {if condition="$v.is_export eq 1 and $v.export_to neq '0'"}
+                                    <td class="text-center">{$v.export_to}</td>
+                                    {elseif condition="$v.is_export eq 1 and $v.export_to eq null"/}
+                                    <td class="text-center"><span class="label label-green">on</span><span class="label label-red">跟进人未选择</span></td>
                                     {else/}
-                                        {if condition="$v.is_export neq 0 and $v.export_to neq '0'"}
-                                        <td class="text-center">{$v.export_to}</td>
-                                        {else/}
-                                        <td class="text-center">{$v.user}</td>
-                                        {/if}
+                                    <td class="text-center"><span>{$v.user}</span></td>
                                     {/if}
 
 
 
                                     <td class="text-center">
-                                        {if condition="$Request.session.name neq $v.user"}
-                                        <a></a>
+                                        {if condition="$Request.session.name neq $v.user and $v.export_to eq $Request.session.name and $v.vertified_by neq $Request.session.name"}
+                                        <!--客户不是你创建的，但是是你分下去的客人-->
+                                        <a class="btn btn-success" href="{:url('customer/vertify',array('id'=>$v['id'],'name'=>$v['export_to']))}"><i class="fa fa-thumbs-o-up"></i></a>
+                                        {elseif condition="$v.vertified_by eq $Request.session.name"}
+                                        <a class="btn btn-success" href="#"><i class="fa fa-thumbs-o-up"></i>已认证</a>
                                         {else/}
                                         <a class="btn btn-danger" href="{:url('customer/delete',array('id'=>$v['id']))}">删除</a>
                                         {/if}
