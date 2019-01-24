@@ -973,7 +973,6 @@ class Business extends Base
                 $value = $data['amount'];
                 $data['service_fee'] = $value;
             }
-            dump($data);die;
             $res = db('business')->insert($data);
             if($res){
 
@@ -1154,9 +1153,9 @@ class Business extends Base
                 }
             }
             $input = [];
-            $input[] = "<input class='form-control' type='text' name='service_fee' value='{$res['fee']}' readonly/>";
-            $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/>";
-            $input[] = "<input class='form-control' type='text' name='goverment_fee' value='{$res['goverment_fee']}' readonly/>";
+            $input[] = "<input class='form-control' type='text' name='service_fee' value='{$res['fee']}' readonly/><p><span class=\"btn btn-danger btn-sm\">修改服务费</span></p>";
+            $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/><p><span class=\"btn btn-danger btn-sm\">修改邮寄费</span></p>";
+            $input[] = "<input class='form-control' type='text' name='goverment_fee' value='{$res['goverment_fee']}' readonly/><p><span class=\"btn btn-danger btn-sm\">修改政府费</span></p>";
             if(!is_null($res['refundable'])){
                 $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' />";
             }else{
@@ -1373,7 +1372,7 @@ class Business extends Base
         $user_name = session('name');
 
         if($level == 'personal'){
-            $res = db('business')->where('user','like',$user_name)->whereTime('create_time','month')->select()->toArray();
+            $res = db('business')->where('user|wenan','like',$user_name)->whereTime('create_time','month')->select()->toArray();
             $filename = $user_name . '的' . date('n') . '月业务报表';
         }else{
             $res = db('business')->whereTime('create_time','month')->select()->toArray();
