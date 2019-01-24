@@ -464,10 +464,30 @@ class Customer extends Base
         //如果找到了，则是信息，否则返回0
         return json($res);
     }
+	
+	
+	public function UciCheck(){
+        if(request()->isPost()){
+            $uci_num = input('uci_num');
+            $count = db('customer')->where('uci','=',$uci_num)->count();
+            if($count ==1){
+                $res = db('customer')->where('uci','=',$uci_num)->find();
+            }else{
+                $res = 0;
+            }
+        }
+        //如果找到了，则是信息，否则返回0
+        return json($res);
+    }
 
 
 
-
+    public function vertify(){
+        $id = input('id');
+        $name = input('name');
+        db('customer')->where('id','=',$id)->update(['vertified_by'=>$name]);
+        $this->redirect('customer/personal_customer');
+    }
 
 
 
