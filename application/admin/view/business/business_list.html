@@ -80,7 +80,13 @@
                     {/if}
 
                     <td class="text-center">{$v.submit_time_visa}</td>
+
+                    {if condition="$v.amount neq null"}
+                    <td class="text-center">$ {$v.amount}</td>
+                    {else/}
                     <td class="text-center">$ {$v.service_fee}</td>
+                    {/if}
+
                     <td class="text-center">{$v.user}</td>
 
                     {if condition="$Request.session.sort <=2"}

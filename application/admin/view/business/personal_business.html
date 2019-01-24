@@ -96,8 +96,9 @@
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">客户姓名</th>
                                     <th class="text-center">所办业务</th>
+                                    <th class="text-center">创建时间</th>
                                     <th class="text-center">所收费用</th>
-                                    <th class="text-center">可退款金额</th>
+                                    <!--<th class="text-center">可退款金额</th>-->
                                     <th class="text-center">进度</th>
                                     <th class="text-center">递交 / 预约时间</th>
                                     <th class="text-center">业务负责人</th>
@@ -126,26 +127,23 @@
                                 <tr>
                                     <td class="text-center hidden">{$v.id}</td>
 
-                                    {if condition="$Request.session.duty eq '文案'"}
                                     <td class="text-center"><a href="{:url('business/edit',array('id'=>$v['id']))}">{$v.customer_name}</a></td>
-                                    {else/}
-                                    <td class="text-center">{$v.customer_name}</td>
-                                    {/if}
 
                                     <td class="text-center">{$v.subservice_name}</td>
+                                    <td class="text-center">{$v.create_time|date="Y-m-d",###}</td>
                                     <td class="text-center">$ {$v.service_fee}</td>
 
-                                    <td class="text-center">
-                                    {if condition="$v.subservice_name eq '疑难签证'"}
-                                        $ {$v.refundable}
-                                    {else/}
-                                        {if condition = "$v.wenan eq null"}
-                                        $ {$v.refundable}
-                                        {else/}
-                                        $ 0
-                                        {/if}
-                                    {/if}
-                                    </td>
+                                    <!--<td class="text-center">-->
+                                    <!--{if condition="$v.subservice_name eq '疑难签证'"}-->
+                                        <!--$ {$v.refundable}-->
+                                    <!--{else/}-->
+                                        <!--{if condition = "$v.wenan eq null"}-->
+                                        <!--$ {$v.refundable}-->
+                                        <!--{else/}-->
+                                        <!--$ 0-->
+                                        <!--{/if}-->
+                                    <!--{/if}-->
+                                    <!--</td>-->
 
                                     {if condition="($v.subservice_name eq '学签和小签') || ($v.subservice_name eq '身份恢复和小签') || ($v.subservice_name eq '毕业工签和小签')"}
                                     <td class="text-center">

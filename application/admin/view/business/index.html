@@ -96,6 +96,7 @@
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">客户姓名</th>
                                     <th class="text-center">所办业务</th>
+                                    <th class="text-center">创建时间</th>
                                     <th class="text-center">所收费用</th>
                                     <th class="text-center">首次缴费日期</th>
                                     <th class="text-center">进度</th>
@@ -132,6 +133,7 @@
 
 
                                     <td class="text-center">{$v.subservice_name}</td>
+                                    <td class="text-center">{$v.create_time|date="Y-m-d",###}</td>
                                     <td class="text-center">$ {$v.service_fee}</td>
                                     <td class="text-center">{$v.amount_date}</td>
 

@@ -1,4 +1,4 @@
-{include file="common/css" /}
+    {include file="common/css" /}
 {include file="common/top" /}
 {include file="common/left" /}
 
@@ -133,15 +133,34 @@
                                         </ul>
                                     </div>
                                     <div class="form-group col-md-4 hidden" id="export">
-                                        <label class="col-sm-4 control-label">接单人</label>
+                                        <label class="col-sm-4 control-label">委任业务负责人</label>
                                         <div class="col-sm-8">
                                             <select class="chosen-select chosen-transparent form-control" name="export_to" id="export_to">
-                                                <option value="" disabled>---请选择---</option>
+                                                <option value="">---请选择---</option>
                                                 {volist name="user_export" id="v"}
+                                                {if $v.name eq $Request.session.name}
+                                                <option selected value="{$v.name}">{$v.name}</option>
+                                                {else/}
                                                 <option value="{$v.name}">{$v.name}</option>
+                                                {/if}
                                                 {/volist}
                                             </select>
-                                            <p><span class="label label-danger"><i class="fa fa-exclamation-circle"></i>：如果业务不转交他人处理，接单人请选择：{$Request.session.name}，或取消导单设置</span></p>
+                                            <p><span class="label label-danger"><i class="fa fa-exclamation-circle"></i>：如果业务没有转交需求，则此处无需操作</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">业务所属</label>
+                                        <div class="col-sm-8">
+                                            <select class="chosen-select chosen-transparent form-control" name="user">
+                                                <option selected value="">---请选择---</option>
+                                                {volist name="user_res" id="v"}
+                                                {if $v.name eq $Request.session.name}
+                                                <option selected value="{$v.name}">{$v.name}</option>
+                                                {else/}
+                                                <option value="{$v.name}">{$v.name}</option>
+                                                {/if}
+                                                {/volist}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -173,6 +192,12 @@
                                             <input class='form-control' type='text' value="0"/>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tile-body">
+                            <div class="form-horizontal">
+                                <div class="row">
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">可退款金额</label>
                                         <div class="col-sm-8" id="refundable">
@@ -186,9 +211,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label">负责销售</label>
+                                        <label class="col-sm-4 control-label"></label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' name="user" value="{$Request.session.name}" readonly/>
+
                                         </div>
                                     </div>
                                 </div>
@@ -200,26 +225,30 @@
                             <div class="form-horizontal">
                                 <div class="row">
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label">客户服务费缴费金额<span style="color: red">(*)</span></label>
-                                        <div class="col-sm-8" id="amount">
-                                            <input class='form-control' type='number' name="amount" required/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">缴费日期<span style="color: red">(*)</span></label>
                                         <div class="col-sm-8" id="amount_date">
-                                            <input class='form-control' dir="ltr" data-mask='9999-99-99' placeholder='9999-99-99' type='text' name="amount_date" required/>
+                                            <input class='form-control' dir="ltr" data-mask='9999/99/99' type='text' name="amount_date" required/>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">收款人<span style="color: red">(*)</span></label>
                                         <div class="col-sm-8" id="amount_accept">
-                                            <select class="chosen-select chosen-transparent form-control" name="amount_accept" required>
-                                                <option selected value="">---请选择---</option>
-                                                {volist name="user_res" id="v"}
-                                                <option value="{$v.name}">{$v.name}</option>
-                                                {/volist}
+                                            <!--<select class="chosen-select chosen-transparent form-control" name="amount_accept" required>-->
+                                                <!--<option selected value="">-&#45;&#45;请选择-&#45;&#45;</option>-->
+                                                <!--{volist name="user_res" id="v"}-->
+                                                <!--<option value="{$v.name}">{$v.name}</option>-->
+                                                <!--{/volist}-->
+                                            <!--</select>-->
+                                            <select class="chosen-select chosen-transparent form-control" name="amount_accept">
+                                                <option selected value="李瑞琳">李瑞琳</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">客户缴费总金额<span style="color: red">(*)</span></label>
+                                        <div class="col-sm-8" id="amount">
+                                            <input class='form-control' type='number' name="amount" required/>
+                                            <p><span class="label label-danger"><i class="fa fa-exclamation-circle"></i>：此处只需填写客户缴费金额即可，系统会自动处理总费用及其他情况</span></p>
                                         </div>
                                     </div>
                                 </div>
@@ -345,72 +374,64 @@
                 $('#goverment_fee').html(data[2]);
                 $('#refundable').html(data[3]);
                 $('#non_refundable').html(data[4]);
+
+
+                $('#fees>p').bind('click',function(){
+                    $('#fees>input').removeAttr('readonly');
+                    $('#add_remind').append(
+                        "                                       <div class=\"form-group col-md-4\" id=\"service_fee_change_reason_control\">\n" +
+                        "                                        <label class=\"col-sm-4 control-label\">服务费修改原因</label>\n" +
+                        "                                        <div class=\"col-sm-8\">\n" +
+                        "                                            <input class='form-control' type='text' name='service_fee_change_reason' required />\n" +
+                        "                                            <p><span class=\"btn btn-danger btn-sm\" id=\"service_fee_change_reason\">移除修改</span></p>\n"+
+                        "                                        </div>\n" +
+                        "                                    </div>"
+                    );
+                    $('#service_fee_change_reason').bind('click',function(){
+                        $('#service_fee_change_reason_control').remove();
+                    });
+                    // $(this).unbind('click');
+                });
+
+
+                $('#post_fee>p').bind('click',function(){
+                    $('#post_fee>input').removeAttr('readonly');
+                    $('#add_remind').append(
+                        "                                       <div class=\"form-group col-md-4\" id=\"post_fee_change_control\">\n" +
+                        "                                        <label class=\"col-sm-4 control-label\">邮寄费修改原因</label>\n" +
+                        "                                        <div class=\"col-sm-8\">\n" +
+                        "                                            <input class='form-control' type='text' name='post_fee_change_reason' required />\n" +
+                        "                                            <p><span class=\"btn btn-danger btn-sm\" id=\"post_fee_change_reason\">移除修改</span></p>\n"+
+                        "                                        </div>\n" +
+                        "                                    </div>"
+                    );
+                    $('#post_fee_change_reason').bind('click',function(){
+                        $('#post_fee_change_control').remove();
+                    });
+                });
+
+
+                $('#goverment_fee>p').bind('click',function(){
+                    $('#goverment_fee>input').removeAttr('readonly');
+                    $('#add_remind').append(
+                        "                                       <div class=\"form-group col-md-4\" id=\"goverment_fee_change_reason_control\">\n" +
+                        "                                        <label class=\"col-sm-4 control-label\">政府费修改原因</label>\n" +
+                        "                                        <div class=\"col-sm-8\">\n" +
+                        "                                            <input class='form-control' type='text' name='goverment_fee_change_reason' required />\n" +
+                        "                                            <p><span class=\"btn btn-danger btn-sm\" id=\"goverment_fee_change_reason\">移除修改</span></p>\n"+
+                        "                                        </div>\n" +
+                        "                                    </div>"
+                    );
+                    $('#goverment_fee_change_reason').bind('click',function(){
+                        $('#goverment_fee_change_reason_control').remove();
+                    });
+                });
             }
         });
     });
 
 
-    $('#fees').bind('click',function(){
-        $('#fees>input').removeAttr('readonly');
-        $('#fees>input').val("0");
-        $('#add_remind').append(
-            "                                       <div class=\"form-group col-md-4\" id=\"service_fee_change_reason_control\">\n" +
-            "                                        <label class=\"col-sm-4 control-label\">服务费修改原因</label>\n" +
-            "                                        <div class=\"col-sm-8\">\n" +
-            "                                            <input class='form-control' type='text' name='service_fee_change_reason' required id=\"service_fee_change_reason\"/>\n" +
-            "                                        </div>\n" +
-            "                                    </div>"
-        );
-        $('#service_fee_change_reason').bind('blur',function(){
-            $input = $('#service_fee_change_reason').val();
-            if($input == ""){
-                $('#service_fee_change_reason_control').remove();
-            }
-        });
-        $(this).unbind('click');
-    });
 
-
-    $('#post_fee').bind('click',function(){
-        $('#post_fee>input').removeAttr('readonly');
-        $('#post_fee>input').val("");
-        $('#add_remind').append(
-            "                                       <div class=\"form-group col-md-4\" id=\"post_fee_change_control\">\n" +
-            "                                        <label class=\"col-sm-4 control-label\">邮寄费修改原因</label>\n" +
-            "                                        <div class=\"col-sm-8\">\n" +
-            "                                            <input class='form-control' type='text' name='post_fee_change_reason' required id=\"post_fee_change_reason\"/>\n" +
-            "                                        </div>\n" +
-            "                                    </div>"
-        );
-        $('#post_fee_change_reason').bind('blur',function(){
-            $input = $('#post_fee_change_reason').val();
-            if($input == ""){
-                $('#post_fee_change_control').remove();
-            }
-        });
-        $(this).unbind('click');
-    });
-
-
-    $('#goverment_fee').bind('click',function(){
-        $('#goverment_fee>input').removeAttr('readonly');
-        $('#goverment_fee>input').val("0");
-        $('#add_remind').append(
-            "                                       <div class=\"form-group col-md-4\" id=\"goverment_fee_change_reason_control\">\n" +
-            "                                        <label class=\"col-sm-4 control-label\">政府费修改原因</label>\n" +
-            "                                        <div class=\"col-sm-8\">\n" +
-            "                                            <input class='form-control' type='text' name='goverment_fee_change_reason' required id=\"goverment_fee_change_reason\"/>\n" +
-            "                                        </div>\n" +
-            "                                    </div>"
-        );
-        $('#goverment_fee_change_reason').bind('blur',function(){
-            $input = $('#goverment_fee_change_reason').val();
-            if($input == ""){
-                $('#goverment_fee_change_reason_control').remove();
-            }
-        });
-        $(this).unbind('click');
-    });
 
     //my script
     $('#myonoffswitch1').click(function(){
