@@ -9,6 +9,8 @@
 namespace app\admin\controller;
 
 
+use think\Error;
+
 class Pay extends Base
 {
 
@@ -41,7 +43,7 @@ class Pay extends Base
 
 
             db('pay')->insert($data);
-            $this->redirect('pay/index');
+            $this->redirect('business/index');
         }
 
 
@@ -122,6 +124,10 @@ class Pay extends Base
         //接收客户的业务id
         $business_id = input('id');
         $res = db('pay')->where('business_id','=',$business_id)->select()->toArray();
+        if(empty($res)){
+            $this->redirect("pay/origin",['id'=>$business_id]);
+        }
+
         if($res){
             //计算balance
             $service_fee_balance = array();$post_fee_amount = array();$goverment_fee_amount = array();
@@ -170,5 +176,42 @@ class Pay extends Base
         $res = db('pay')->where('business_id','=',$business_id)->count();
         db('business')->where('id','=',$business_id)->update(['is_payoff'=>0]);
         $this->redirect('business/index');
+    }
+
+
+    public function edit(){
+        //业务的id
+        $id = input('id');
+        $res = db('pay')->where('business_id','=',$id)->select()->toArray();
+        if(empty($res)){
+            $this->redirect('pay/origin',['id'=>$id]);
+        }else{
+            $this->assign('res',$res);
+        }
+        return view();
+    }
+
+
+    public function origin(){
+        //业务id
+        $id = input('id');
+        $res = db('business')->where('id','=',$id)->find();
+        $this->assign('res',$res);
+        return view();
+    }
+
+
+    public function edit_pay_history(){
+
+        if(request()->isPost()){
+            $data = input('post.');
+            $res = db('pay')->where('id','=',$data['id'])->find();
+            db('pay')->where('id','=',$data['id'])->update($data);
+            $this->redirect('pay/edit',['id'=>$res['business_id']]);
+        }
+        $pay_id = input('id');
+        $res = db('pay')->where('id','=',$pay_id)->find();
+        $this->assign('res',$res);
+        return view();
     }
 }
