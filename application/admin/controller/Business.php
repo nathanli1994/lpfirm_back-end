@@ -946,6 +946,7 @@ class Business extends Base
             unset($data['is_criminal']);
             unset($data['is_education']);
 
+
             //同步更新客人信息
             if($data['is_export'] !== 0){
                 $customer_update_info = [
@@ -1157,15 +1158,15 @@ class Business extends Base
             $input[] = "<input class='form-control' type='text' name='post_fee' value='{$res['post_fee']}' readonly/><p><span class=\"btn btn-danger btn-sm\">修改邮寄费</span></p>";
             $input[] = "<input class='form-control' type='text' name='goverment_fee' value='{$res['goverment_fee']}' readonly/><p><span class=\"btn btn-danger btn-sm\">修改政府费</span></p>";
             if(!is_null($res['refundable'])){
-                $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' />";
+                $input[] = "<input class='form-control' type='text' name='refundable' value='{$res['refundable']}' readonly/>";
             }else{
-                $input[] = "<input class='form-control' type='text' name='refundable' value='0' />";
+                $input[] = "<input class='form-control' type='text' name='refundable' value='0' readonly/>";
             }
 
             if(!is_null($res['non_refundable'])){
-                $input[] = "<input class='form-control' type='text' name='non_refundable' value='{$res['non_refundable']}' />";
+                $input[] = "<input class='form-control' type='text' name='non_refundable' value='{$res['non_refundable']}' readonly/>";
             }else{
-                $input[] = "<input class='form-control' type='text' name='non_refundable' value='0' />";
+                $input[] = "<input class='form-control' type='text' name='non_refundable' value='0' readonly/>";
             }
 
         }
