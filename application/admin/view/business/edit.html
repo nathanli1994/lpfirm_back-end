@@ -11,7 +11,7 @@
 <div id="content" class="col-md-12">
     <!-- page header -->
     <div class="pageheader">
-        <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 业务信息修改</h2>
+        <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 业务信息</h2>
     </div>
     <!-- /page header -->
 
@@ -53,7 +53,7 @@
                                         <label class="col-sm-4 control-label">负责文案</label>
                                         <div class="col-sm-8">
                                             {if condition="$res.wenan eq null"}
-                                            <input class='form-control' type='text' name="wenan" value="暂无" readonly/>
+                                            <input class='form-control' type='text' name="wenan" value="暂无负责文案" readonly/>
                                             {else/}
                                             <input class='form-control' type='text' name="wenan" value="{$res.wenan}" readonly/>
                                             {/if}
@@ -63,6 +63,22 @@
                                         <label class="col-sm-4 control-label" >业务所属</label>
                                         <div class="col-sm-8">
                                             <input class='form-control' type='text' value="{$res.user}" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >负责销售</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' type='text' value="{$res.info_collector}" readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >跟进销售</label>
+                                        <div class="col-sm-8">
+                                            {if condition="$res.export_to eq 0"}
+                                            <input class='form-control' type='text' value="{$res.user}" readonly/>
+                                            {else/}
+                                            <input class='form-control' type='text' value="{$res.export_to}" readonly/>
+                                            {/if}
                                         </div>
                                     </div>
                                 </div>
@@ -77,11 +93,10 @@
                                         <label class="col-sm-4 control-label">建档时间</label>
                                         <div class="col-sm-8">
                                             {if condition="$res.make_file_date eq null"}
-                                            <input class='form-control' type='text' value="文案尚未为该客户建立档案" readonly/>
+                                            <input class='form-control' type='text' name="make_file_date" readonly value="{$res.create_time|date=\"Y-m-d\",###}"/>
                                             {else/}
-                                            <input class='form-control' type='text' value="{$res.make_file_date}" readonly/>
+                                            <input class='form-control' type='text' name="make_file_date" readonly value="{$res.make_file_date|date=\"Y-m-d\",###}"/>
                                             {/if}
-
                                         </div>
                                     </div>
 
@@ -90,32 +105,36 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">签证递交时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="{$res.submit_time_visa}" readonly/>
+                                            <input class='form-control' type='text' name="submit_time_passport" value="{$res.submit_time_visa}" readonly/>
                                         </div>
                                         <label class="col-sm-4 control-label">护照递交时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="{$res.submit_time_passport}" readonly/>
+                                            <input class='form-control' type='text' name="submit_time_passport" value="{$res.submit_time_passport}" readonly/>
                                         </div>
                                     </div>
                                     {elseif condition="$res.submit_time_visa eq null and $res.submit_time_passport neq null" /}
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">护照递交时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="{$res.submit_time_passport}" readonly/>
+                                            <input class='form-control' type='text' name="submit_time_passport" value="{$res.submit_time_passport}" readonly/>
                                         </div>
                                     </div>
                                     {elseif condition="$res.submit_time_visa neq null and $res.submit_time_passport eq null" /}
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">签证递交时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="{$res.submit_time_visa}" readonly/>
+                                            {if condition="$res.submit_time_visa neq null"}
+                                            <input class='form-control' type='text' name="submit_time_visa" value="{$res.submit_time_visa}" readonly/>
+                                            {else/}
+                                            <input class='form-control' type='text' name="submit_time_visa" value="材料信息处理中，文案还未递交" readonly/>
+                                            {/if}
                                         </div>
                                     </div>
                                     {else/}
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">递交时间</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' value="业务还未递交，文案正在处理...." readonly/>
+                                            <input class='form-control' name="submit_time_visa" type='text' value="" readonly/>
                                         </div>
                                     </div>
                                     {/if}
@@ -124,10 +143,10 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">结案时间</label>
                                         <div class="col-sm-8">
-                                            {if condition='$res.case_close_time neq null'}
-                                            <input class='form-control' type='text' value="{$res.case_close_time|date='Y-m-d',###}" readonly/>
+                                            {if condition='$res.case_close_time neq null and $res.case_close_time neq 0'}
+                                            <input class='form-control' type='text' name="case_close_time" value="{$res.case_close_time|date='Y-m-d',###}" readonly/>
                                             {else/}
-                                            <input class='form-control' type='text' value="文案处理中...当前进度为：{$res.progress}" readonly/>
+                                            <input class='form-control' name="case_close_time" value="案件处理中..." type='text' readonly/>
                                             {/if}
                                         </div>
                                     </div>
@@ -139,16 +158,6 @@
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row">
-                                    <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label" >业务负责人</label>
-                                        <div class="col-sm-8">
-                                            {if condition="$res.export_to eq 0"}
-                                            <input class='form-control' type='text' value="{$res.user}" readonly/>
-                                            {else/}
-                                            <input class='form-control' type='text' value="{$res.export_to}" readonly/>
-                                            {/if}
-                                        </div>
-                                    </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label" >特殊情况备注</label>
                                         <div class="col-sm-8">
@@ -276,14 +285,10 @@
                         </div>
                         {/if}
 
-
-
-
-
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row">
-                                    {if condition="$res.is_payoff eq 1 || $Request.session.duty eq '文案'"}
+                                    {if condition="$res.is_payoff eq 1"}
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">服务费</label>
                                         <div class="col-sm-8" id="fees">
@@ -318,7 +323,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">政府费</label>
                                         <div class="col-sm-8" id="goverment_fee">
-                                            <input class='form-control' type='text' name="goverment_fee" value="{$res.goverment_fee}" readonly/>
+                                            <input class='form-control' type='text' name="goverment_fee" value="{$res.goverment_fee}"/>
                                         </div>
                                     </div>
                                     {/if}
@@ -356,6 +361,17 @@
                                                     <label class="col-sm-4 control-label">业务递交日期</label>
                                                     <div class="col-sm-8">
                                                         <input class='form-control' type='text' value="{$res.submit_time_visa}" readonly/>
+                                                    </div>
+                                                </div>
+                                                {/empty}
+
+                                                {empty name="$res.case_close_time"}
+                                                <!--/////-->
+                                                {else/}
+                                                <div class="form-group col-md-4">
+                                                    <label class="col-sm-4 control-label">业务完成日期</label>
+                                                    <div class="col-sm-8">
+                                                        <input class='form-control' type='text' value="{$res.case_close_time|date=\"Y-m-d\",###}" readonly/>
                                                     </div>
                                                 </div>
                                                 {/empty}
@@ -513,10 +529,18 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
+
                                         <label class="col-sm-4 control-label"></label>
                                         <div class="col-sm-8">
+                                            {if condition="$Request.session.duty eq '文案'"}
+                                            {if condition="$res.case_close_time eq null or $res.case_close_time eq 0"}
                                             <button type="submit" class="btn btn-success">修改</button>
+                                            {else/}
+                                            <button type="button" class="btn btn-success">修改</button>
+                                            {/if}
+                                            {/if}
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
