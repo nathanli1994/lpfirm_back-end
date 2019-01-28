@@ -241,12 +241,14 @@
                                         <a class="label label-success" href="{:url('pay/index',array('id'=>$v['id']))}">缴费记录</a>
                                         <a class="label label-danger" href="{:url('business/delete',array('id'=>$v['id']))}">删除</a>
                                         {else/}
+                                            <!--如果交齐了就进行修改-->
                                             {if condition="$v.is_payoff eq 1"}
-                                            <a class="label label-success" href="#"><span class="fa fa-check">已交齐</span></a>
-                                            <a class="label label-success" href="{:url('pay/index',array('id'=>$v['id']))}">缴费记录</a>
+                                            <a class="label label-danger" href="{:url('pay/edit',array('id'=>$v['id']))}">修改记录</a>
+                                            <a class="label label-success" href="{:url('pay/index',array('id'=>$v['id']))}">查看记录</a>
+                                            <!--否则添加缴费记录-->
                                             {else/}
                                             <a class="label label-cyan" href="{:url('pay/add',array('id'=>$v['id']))}">添加缴费</a>
-                                            <a class="label-success label" href="{:url('pay/index',array('id'=>$v['id']))}">缴费记录</a>
+                                            <a class="label-success label" href="{:url('pay/index',array('id'=>$v['id']))}">查看记录</a>
                                             {/if}
                                         {/if}
                                     </td>
