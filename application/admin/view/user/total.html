@@ -112,7 +112,7 @@
                                     <th class="text-center">人数</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="sortable">
 
                                 {volist name="position_people" id="v"}
                                 <tr>
@@ -177,6 +177,9 @@
 
 <script>
     $(function(){
+	
+	$( "#sortable" ).sortable();
+	
 
         // Morris line chart
 
@@ -710,7 +713,8 @@
 
         }, 5000);
 
-    })
+    });
+	
 
 </script>
 </body>

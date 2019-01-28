@@ -181,9 +181,9 @@
                                                     </label>
                                                 </div>
                                                 {if condition="$res.vertified_by neq null"}
-                                                <p><span class="label label-success"><i class="fa fa-exclamation-circle"></i>：来自{$res.user}导入已由本人认证</span></p>
+                                                <p><span class="label label-success"><i class="fa fa-exclamation-circle"></i>：{$res.export_to}客户来源已认证</span></p>
                                                 {else/}
-                                                <p><span class="label label-success"><i class="fa fa-exclamation-circle"></i>：来自{$res.user}导入还未认证</span></p>
+                                                <p><span class="label label-danger"><i class="fa fa-exclamation-circle"></i>：{$res.export_to}客户来源未认证</span></p>
                                                 {/if}
                                             </li>
                                         </ul>

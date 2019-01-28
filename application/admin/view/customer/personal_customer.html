@@ -101,6 +101,7 @@
                                     <th class="text-center">签证到期日</th>
                                     <th class="text-center">负责跟进人</th>
                                     <th class="text-center">客户来源</th>
+                                    <th class="text-center">信息收集完成度</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -205,6 +206,28 @@
                                     {/if}
 
 
+                                    <td class="text-center">
+                                        <div class="progress">
+                                            <!--电话20%，passport_number 20%和passport_due 10%是必填的，剩下 20%的无法控制，所以初始就是70,uci 20%和签证截止日 10%不是必填的-->
+                                            {if condition="$v.uci neq null and $v.visa_due neq null"}
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                <span class="">已完成100%</span>
+                                            </div>
+                                            {elseif condition="$v.uci eq null and $v.visa_due neq null"}
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                                <span class="">已完成80%</span>
+                                            </div>
+                                            {elseif condition="$v.uci neq null and $v.visa_due eq null"}
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%">
+                                                <span class="">已完成90%</span>
+                                            </div>
+                                            {else/}
+                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+                                                <span class="">已完成70%</span>
+                                            </div>
+                                            {/if}
+                                        </div>
+                                    </td>
 
                                     <td class="text-center">
                                         {if condition="$Request.session.name neq $v.user and $v.export_to eq $Request.session.name and $v.vertified_by neq $Request.session.name"}
