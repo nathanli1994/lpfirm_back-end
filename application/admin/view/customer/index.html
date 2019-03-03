@@ -94,14 +94,13 @@
                                 <tr>
                                     <!--<th class="text-center">头像</th>-->
                                     <th class="text-center hidden">id</th>
-                                    <th class="text-center">姓名</th>
+                                    <th class="text-center">客户姓名</th>
                                     <th class="text-center">电话</th>
-                                    <th class="text-center">业务</th>
+                                    <th class="text-center">护照号码</th>
                                     <th class="text-center">护照到期日</th>
                                     <th class="text-center">签证到期日</th>
-                                    <th class="text-center">客户来源</th>
-                                    <th class="text-center">负责跟进人</th>
-                                    <th class="text-center">信息收集完成度</th>
+                                    <th class="text-center">业务员</th>
+                                    <th class="text-center">信息完成度</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -114,117 +113,97 @@
                                     <td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center"><a href="{:url('customer/edit',array('id'=>$v['id']))}">{$v.name}</a></td>
                                     <td class="text-center">{$v.phone}</td>
-                                    <td class="text-center">{$v.sub_service}</td>
-
-                                    <!--护照-->
+                                    <!--<td class="text-center">{$v.sub_service}</td>-->
+                                    <td class="text-center">{$v.passport_number}</td>
+                                    <!--护照到期日-->
                                     {if condition="$v.sub_service eq '境外旅游签'"}
-                                        <td class="text-center">{$v.passport_due}&nbsp;&nbsp;<i class="fa fa-check-circle" style="color: green"></i></td>
+                                    <td class="text-center">{$v.passport_due}&nbsp;&nbsp;<i class="fa fa-check-circle" style="color: green"></i></td>
                                     {else/}
-                                        {if condition="$v.passport_due_diff > 180"}
-                                        <td class="text-center"><span class="label">{$v.passport_due}</span></td>
-                                        {elseif condition="(0<$v.passport_due_diff) and ($v.passport_due_diff <= 90)"/}
-                                        <td class="text-center">
-                                            {if condition="$v.passport_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-cyan">{$v.passport_due}</span>，
-                                            {/if}
-                                        </td>
-                                        {elseif condition="(-30<$v.passport_due_diff) and ($v.passport_due_diff <= 0)"/}
-                                        <td class="text-center">
-                                            {if condition="$v.passport_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-orange">{$v.passport_due}</span>
-                                            {/if}
-                                        </td>
+                                    {if condition="$v.passport_due_diff > 180"}
+                                    <td class="text-center"><span class="label">{$v.passport_due}</span></td>
+                                    <!--180天以内开始提醒，蓝色-->
+                                    {elseif condition="(0 <= $v.passport_due_diff) and ($v.passport_due_diff <= 180)"/}
+                                    <td class="text-center">
+                                        {if condition="$v.passport_progress =='申请递交'"}
+                                        <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
+                                        <span class="label label-success">申请递交</span>
                                         {else/}
-                                        <td class="text-center">
-                                            {if condition="$v.passport_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-danger">{$v.passport_due}</span>
-                                            {/if}
-                                        </td>
+                                        <span class="label label-cyan">{$v.passport_due}</span>{$v.passport_count_down}天
                                         {/if}
+                                    </td>
+                                    <!--疑难，红色-->
+                                    {else/}
+                                    <td class="text-center">
+                                        {if condition="$v.passport_progress =='申请递交'"}
+                                        <span class="label label-success">{$v.passport_due}</span>&nbsp;&nbsp;
+                                        <span class="label label-success">申请递交</span>
+                                        {else/}
+                                        <span class="label label-danger">{$v.passport_due}</span>
+                                        {/if}
+                                    </td>
+                                    {/if}
                                     {/if}
 
-
-
-
-                                    <!--签证-->
+                                    <!--签证到期日-->
                                     {if condition="$v.sub_service eq '境外旅游签'"}
-                                        <td class="text-center">{$v.visa_due}&nbsp;&nbsp;<i class="fa fa-times-circle" style="color: red"></i></td>
+                                    <td class="text-center">{$v.visa_due}&nbsp;&nbsp;<i class="fa fa-times-circle" style="color: red"></i></td>
                                     {else/}
-                                        {if condition="$v.visa_due_diff > 90"}
-                                        <td class="text-center"><span class="label">{$v.visa_due}</span></td>
-                                        {elseif condition="(0<$v.visa_due_diff) and ($v.visa_due_diff < 90)"/}
-                                        <td class="text-center">
-                                            {if condition="$v.visa_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-cyan">{$v.visa_due}</span>
-                                            {/if}
-                                        </td>
-                                        {elseif condition="($v.visa_due_diff < 0) and ($v.visa_due_diff >= -90)"/}
-                                        <td class="text-center">
-                                            {if condition="$v.visa_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-orange">{$v.visa_due}</span>
-                                            {/if}
-                                        </td>
+                                    {if condition="$v.visa_due_diff > 90"}
+                                    <td class="text-center"><span class="label">{$v.visa_due}</span></td>
+                                    {elseif condition="(0 <= $v.visa_due_diff) and ($v.visa_due_diff <= 90)"/}
+                                    <!--0-90-->
+                                    <td class="text-center">
+                                        {if condition="$v.visa_progress =='申请递交'"}
+                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+                                        <span class="label label-success">申请递交</span>
                                         {else/}
-                                        <td class="text-center">
-                                            {if condition="$v.visa_progress =='申请递交'"}
-                                            <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
-                                            <span class="label label-success">申请递交</span>
-                                            {else/}
-                                            <span class="label label-danger">{$v.visa_due}</span>
-                                            {/if}
-                                        </td>
+                                        <span class="label label-cyan">{$v.visa_due}</span>{$v.visa_count_down}天
                                         {/if}
+                                    </td>
+                                    {elseif condition="($v.visa_due_diff < 0) and ($v.visa_due_diff >= -90)"/}
+                                    <!--0 - -90-->
+                                    <td class="text-center">
+                                        {if condition="$v.visa_progress =='申请递交'"}
+                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+                                        <span class="label label-success">申请递交</span>
+                                        {else/}
+                                        <span class="label label-orange">{$v.visa_due}</span>{$v.visa_count_down}天
+                                        {/if}
+                                    </td>
+                                    {else/}
+                                    <td class="text-center">
+                                        {if condition="$v.visa_progress =='申请递交'"}
+                                        <span class="label label-success">{$v.visa_due}</span>&nbsp;&nbsp;
+                                        <span class="label label-success">申请递交</span>
+                                        {else/}
+                                        <span class="label label-danger">{$v.visa_due}</span>
+                                        {/if}
+                                    </td>
                                     {/if}
-
-
-
+                                    {/if}
 
 
                                     <td class="text-center">{$v.user}</td>
 
 
-
-                                    {if condition="$v.is_export neq 0 and $v.export_to neq '0'"}
-                                    <td class="text-center">{$v.export_to}</td>
-                                    {elseif condition="$v.is_export eq 0"/}
-                                    <td class="text-center"><span>{$v.user}</span></td>
-                                    {else/}
-                                    <td class="text-center"><span class="label label-green">on</span><span class="label label-red">跟进人未选择</span></td>
-                                    {/if}
-
                                     <td class="text-center">
                                         <div class="progress">
                                             <!--电话20%，passport_number 20%和passport_due 10%是必填的，剩下 20%的无法控制，所以初始就是70,uci 20%和签证截止日 10%不是必填的-->
                                             {if condition="$v.uci neq null and $v.visa_due neq null"}
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                            <div class=" " role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                                                 <span class="">已完成100%</span>
                                             </div>
                                             {elseif condition="$v.uci eq null and $v.visa_due neq null"}
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                                <span class="">已完成80%</span>
+                                            <div class="  " role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                                <span class="" style="color: orange">已完成80%</span>
                                             </div>
                                             {elseif condition="$v.uci neq null and $v.visa_due eq null"}
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%">
-                                                <span class="">已完成90%</span>
+                                            <div class="  " role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width: 90%">
+                                                <span class="" style="color: orange">已完成90%</span>
                                             </div>
                                             {else/}
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-                                                <span class="">已完成70%</span>
+                                            <div class="  " role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+                                                <span class="" style="color: red">已完成70%</span>
                                             </div>
                                             {/if}
                                         </div>
@@ -368,8 +347,8 @@
                 $('.dataTables_filter input').attr("placeholder", "Search");
             }
         });
-        var addLink = '<a href="{:url(\'customer/add\')}" class="btn btn-green btn-sm add-row">添 加 客 人</a>';
-        $('#basicDataTable').append(addLink);
+        // var addLink = '<a href="{:url(\'customer/add\')}" class="btn btn-green btn-sm add-row">添 加 客 人</a>';
+        // $('#basicDataTable').append(addLink);
         //initialize chosen
         $('.dataTables_length select').chosen({disable_search_threshold: 10});
 

@@ -1,11 +1,6 @@
-    {include file="common/css" /}
+{include file="common/css" /}
 {include file="common/top" /}
 {include file="common/left" /}
-
-
-
-
-
 
 <!-- Page content -->
 <div id="content" class="col-md-12">
@@ -14,8 +9,6 @@
         <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 添加业务</h2>
     </div>
     <!-- /page header -->
-
-
     <!-- content main container -->
     <div class="main">
         <!-- row -->
@@ -32,7 +25,7 @@
 
                     <!-- tile body -->
                     <form method="post" action="{:url('business/add')}">
-                        <input type="text" class="form-control hidden" name="student_id" placeholder="客户id" value="{$student_res.id}">
+                        <input type="text" class="form-control hidden" name="student_id" placeholder="客户id" value="{$student_res.id}" id="student_id">
                         <input type="text" class="form-control hidden" name="customer_name" placeholder="客户名字" value="{$student_res.name}">
                         <input type="text" class="form-control hidden" name="in_progress" placeholder="默认正在做的业务" value="1">
 
@@ -54,7 +47,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">具体业务</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" name="subservice_name" id="subservice">
+                                            <select class="chosen-select chosen-transparent form-control" name="subservice_name" id="subservice">
 
                                             </select>
                                         </div>
@@ -79,10 +72,11 @@
                                         </div>
                                     </div>
 
+                                    {if condition="$Request.session.duty eq '销售'"}
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">进度</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" name="progress" id="progress">
+                                            <select class="form-control" name="progress" id="progress" disabled>
 
                                             </select>
                                         </div>
@@ -90,14 +84,16 @@
                                     <div class="form-group col-md-4 hidden" id="progress2">
                                         <label class="col-sm-4 control-label">小签进度</label>
                                         <div class="col-sm-8">
-                                            <select class="form-control" name="extra_progress" id="extra_progress">
+                                            <select class="form-control" name="extra_progress" id="extra_progress" disabled>
 
                                             </select>
                                         </div>
                                     </div>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
+
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row">
@@ -233,16 +229,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">业务所属</label>
                                         <div class="col-sm-8">
-                                            <select class="chosen-select chosen-transparent form-control" name="user">
-                                                <option selected value="">---请选择---</option>
-                                                {volist name="user_res" id="v"}
-                                                {if $v.name eq $Request.session.name}
-                                                <option selected value="{$v.name}">{$v.name}</option>
-                                                {else/}
-                                                <option value="{$v.name}">{$v.name}</option>
-                                                {/if}
-                                                {/volist}
-                                            </select>
+                                            <input class='form-control' type='text' name="user" value="{$Request.session.name}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -274,7 +261,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row">
@@ -293,7 +279,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="tile-body">
                             <div class="form-horizontal">
                                 <div class="row" >
@@ -307,6 +292,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </form>
                     <!-- /tile body -->
                 </section>
@@ -319,18 +305,16 @@
     <!-- /content container -->
 </div>
 <!-- Page content end -->
-</div>
-<!-- Make page fluid-->
 
-
-
-
-</div>
-<!-- Wrap all page content end -->
 {include file="common/js" /}
 
 <script>
     $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    $('#buttons').click(function(){
+        $('#progress').removeAttr('disabled');
+        $('#extra_progress').removeAttr('disabled');
+    });
 
     //通过business_type获取subservice
     $('#business_type').change(function(){
@@ -342,6 +326,537 @@
             dataType:"json",
             success:function(data){
                 $('#subservice').html(data);
+                $('.chosen-select').chosen('destroy');
+                $(".chosen-select").chosen({disable_search_threshold: 1});
+
+                $('#subservice').change(function(){
+                   $val =  $(this).val();
+                   if($val=='高中申请'){
+                       $student_id = $('#student_id').val();
+                       $(".main").fadeOut(2000, function(){
+                           $('#content').load("{:url('schools/loadpage')}", {student_id:$student_id,val:$val}, function () {});
+                       });
+                   }
+
+                    if($val=='college申请'){
+                        $student_id = $('#student_id').val();
+                        $(".main").fadeOut(2000, function(){
+                            $('#content').load("{:url('schools/loadpage')}", {student_id:$student_id,val:$val}, function () {});
+                        });
+                    }
+                   // // 高中申请
+                   // if($val == '高中申请'){
+                   //     $(".main").fadeOut(2000,function(){
+                   //         $(this).remove();
+                   //         $("#content").append(
+                   //             "<!-- content main container -->\n" +
+                   //             "    <div class=\"main\" >\n" +
+                   //             "        <!-- row -->\n" +
+                   //             "        <div class=\"row\">\n" +
+                   //             "            <!-- col 12 -->\n" +
+                   //             "            <div class=\"col-md-12\">\n" +
+                   //             "                <!-- tile -->\n" +
+                   //             "                <section class=\"tile color transparent-white\">\n" +
+                   //             "                    <!-- tile header -->\n" +
+                   //             "                    <div class=\"tile-header\">\n" +
+                   //             "                        <h1><strong>高中申请</strong></h1>\n" +
+                   //             "                    </div>\n" +
+                   //             "                    <!-- /tile header -->\n" +
+                   //             "\n" +
+                   //             "                    <!-- tile body -->\n" +
+                   //             "                    <form method=\"post\" action=\"{:url('performance/add')}\">\n" +
+                   //             "                        <div class=\"tile-body\" id=\"extra_school\">\n" +
+                   //             "                            <div class=\"form-horizontal\">\n" +
+                   //             "                                <div class=\"row\">\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">负责文案</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"wenan\">\n" +
+                   //             "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //             "                                                <option value=\"宋海培\">宋海培</option>\n" +
+                   //             "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //             "                                            </select>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">负责行政</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"contact_with_school\">\n" +
+                   //             "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //             "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //             "                                            </select>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">所申学校</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='text' name=\"school_name\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">申请费</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='number' name=\"apply_fee\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">学杂费</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='number' name=\"tuition_fee\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">费用总计</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='number' name=\"total\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">申请年级</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='text' name=\"grade\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">课程数量统计</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' type='text' name=\"credit\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "\n" +
+                   //             "\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">入学日期</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' dir=\"ltr\" data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"enroll_date\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">录取状态</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"status\">\n" +
+                   //             "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //             "                                                <option value=\"审核中\">审核中</option>\n" +
+                   //             "                                                <option value=\"被录取\">被录取</option>\n" +
+                   //             "                                                <option value=\"被拒绝\">被拒绝</option>\n" +
+                   //             "                                            </select>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                    <div class=\"form-group col-md-4\">\n" +
+                   //             "                                        <label class=\"col-sm-4 control-label\">录取日期</label>\n" +
+                   //             "                                        <div class=\"col-sm-8\">\n" +
+                   //             "                                            <input class='form-control' data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"accept_date\"/>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                </div>\n" +
+                   //             "\n" +
+                   //             "\n" +
+                   //             "                                <div class=\"form-group col-md-4 hidden\">\n" +
+                   //             "                                    <label class=\"col-sm-4 control-label\">客户信息</label>\n" +
+                   //             "                                    <div class=\"col-sm-8\">\n" +
+                   //             "                                        <input class='form-control' type='text' name=\"student_id\" value=\"{$student_res.id}\"/>\n" +
+                   //             "                                        <input class='form-control' type='text' name=\"customer_name\" value=\"{$student_res.name}\"/>\n" +
+                   //             "                                        <input class='form-control' type='text' name=\"user\" value=\"{$Request.session.name}\"/>\n" +
+                   //             "                                        <input class='form-control' type='text' name=\"application_type\" value=\"高中申请\"/>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                </div>\n" +
+                   //             "                                <div class=\"tile-body\">\n" +
+                   //             "                                    <div class=\"form-horizontal\">\n" +
+                   //             "                                        <div class=\"row\" >\n" +
+                   //             "                                            <div class=\"form-group col-md-4\"></div>\n" +
+                   //             "                                            <div class=\"form-group col-md-4\" >\n" +
+                   //             "                                                <label class=\"col-sm-4 control-label\"></label>\n" +
+                   //             "                                                <div class=\"col-sm-8\">\n" +
+                   //             "                                                    <button type=\"submit\" class=\"btn btn-success\">添加学校申请</button>\n" +
+                   //             "                                                    <button type=\"button\" class=\"btn btn-cyan\" id=\"extra_apply\">添加额外学校申请</button>\n" +
+                   //             "                                                </div>\n" +
+                   //             "                                            </div>\n" +
+                   //             "                                        </div>\n" +
+                   //             "                                    </div>\n" +
+                   //             "                                </div>\n" +
+                   //             "                            </div>\n" +
+                   //             "                        </div>\n" +
+                   //             "                    </form>\n" +
+                   //             "                    <!-- /tile body -->\n" +
+                   //             "                </section>\n" +
+                   //             "                <!-- /tile -->\n" +
+                   //             "            </div>\n" +
+                   //             "            <!-- /col 12 -->\n" +
+                   //             "        </div>\n" +
+                   //             "        <!-- /row -->\n" +
+                   //             "    </div>\n" +
+                   //             "    <!-- /content container -->"
+                   //         );
+                   //     });
+                   // }
+                   //  $('#content').on('click', "#extra_apply", function(){
+                   //      $('#extra_school').append(
+                   //          "<!-- content main container 追加-->\n" +
+                   //          "    <div class=\"main\" >\n" +
+                   //          "        <!-- row -->\n" +
+                   //          "        <div class=\"row\">\n" +
+                   //          "            <!-- col 12 -->\n" +
+                   //          "            <div class=\"col-md-12\">\n" +
+                   //          "                <!-- tile -->\n" +
+                   //          "                <section class=\"tile color transparent-white\">\n" +
+                   //          "                    <!-- tile header -->\n" +
+                   //          "                    <div class=\"tile-header\">\n" +
+                   //          "                        <h1><strong>额外学校申请</strong></h1>\n" +
+                   //          "                    </div>\n" +
+                   //          "                    <!-- /tile header -->\n" +
+                   //          "\n" +
+                   //          "                    <!-- tile body -->\n" +
+                   //          "                        <div class=\"tile-body\">\n" +
+                   //          "                            <div class=\"form-horizontal\">\n" +
+                   //          "                                <div class=\"row\">\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">所申学校</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='text' name=\"extra_highschools[extra_schools][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">申请费</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='number' name=\"extra_highschools[extra_apply_fee][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">学杂费</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='number' name=\"extra_highschools[extra_tuition_fee][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">费用总计</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='number' name=\"extra_highschools[extra_total][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">申请年级</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='text' name=\"extra_highschools[extra_grade][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">课程数量统计</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' type='text' name=\"extra_highschools[extra_credit][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\">入学日期</label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <input class='form-control' dir=\"ltr\" data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"extra_highschools[extra_enroll_date][]\"/>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                    <div class=\"form-group col-md-4\">\n" +
+                   //          "                                        <label class=\"col-sm-4 control-label\"></label>\n" +
+                   //          "                                        <div class=\"col-sm-8\">\n" +
+                   //          "                                            <button type=\"button\" id=\"delete\" class=\"btn btn-danger\">移除</button>\n" +
+                   //          "                                        </div>\n" +
+                   //          "                                    </div>\n" +
+                   //          "                                </div>\n" +
+                   //          "                            </div>\n" +
+                   //          "                        </div>\n" +
+                   //          "                    <!-- /tile body -->\n" +
+                   //          "                </section>\n" +
+                   //          "                <!-- /tile -->\n" +
+                   //          "            </div>\n" +
+                   //          "            <!-- /col 12 -->\n" +
+                   //          "        </div>\n" +
+                   //          "        <!-- /row -->\n" +
+                   //          "    </div>\n" +
+                   //          "    <!-- /content container 追加-->"
+                   //      );
+                   //      $('#extra_school').on('click', "#delete", function(){
+                   //          $(this).parent().parent().parent().parent().parent().parent().parent().parent().parent().remove();
+                   //      });
+                   //  });
+                   //
+                   // //college申请
+                   //  if($val == 'college申请'){
+                   //      $(".main").fadeOut(2000,function(){
+                   //          $(this).remove();
+                   //          $("#content").append(
+                   //              "<!-- content main container -->\n" +
+                   //              "    <div class=\"main\" >\n" +
+                   //              "        <!-- row -->\n" +
+                   //              "        <div class=\"row\">\n" +
+                   //              "            <!-- col 12 -->\n" +
+                   //              "            <div class=\"col-md-12\">\n" +
+                   //              "                <!-- tile -->\n" +
+                   //              "                <section class=\"tile color transparent-white\">\n" +
+                   //              "                    <!-- tile header -->\n" +
+                   //              "                    <div class=\"tile-header\">\n" +
+                   //              "                        <h1><strong>college申请</strong></h1>\n" +
+                   //              "                    </div>\n" +
+                   //              "                    <!-- /tile header -->\n" +
+                   //              "\n" +
+                   //              "                    <!-- tile body -->\n" +
+                   //              "                    <form method=\"post\" action=\"{:url('performance/add')}\">\n" +
+                   //              "                        <div class=\"tile-body\" id=\"extra_school\">\n" +
+                   //              "                            <div class=\"form-horizontal\">\n" +
+                   //              "                                <div class=\"row\">\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">负责文案</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"wenan\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"宋海培\">宋海培</option>\n" +
+                   //              "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">负责行政</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"contact_with_school\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">所申学校</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='text' name=\"school_name\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">服务费</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='number' name=\"apply_fee\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">学杂费</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='number' name=\"tuition_fee\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">费用总计</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='number' name=\"total\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">申请年级</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='text' name=\"grade\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">课程数量统计</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='text' name=\"credit\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              "\n" +
+                   //              "\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">入学日期</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' dir=\"ltr\" data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"enroll_date\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">录取状态</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"status\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"审核中\" selected>审核中</option>\n" +
+                   //              "                                                <option value=\"被录取\">被录取</option>\n" +
+                   //              "                                                <option value=\"被拒绝\">被拒绝</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">录取日期</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"accept_date\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "\n" +
+                   //              "\n" +
+                   //              "                                <div class=\"form-group col-md-4 hidden\">\n" +
+                   //              "                                    <label class=\"col-sm-4 control-label\">客户信息</label>\n" +
+                   //              "                                    <div class=\"col-sm-8\">\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"student_id\" value=\"{$student_res.id}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"customer_name\" value=\"{$student_res.name}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"user\" value=\"{$Request.session.name}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"application_type\" value=\"college申请\"/>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "                                <div class=\"tile-body\">\n" +
+                   //              "                                    <div class=\"form-horizontal\">\n" +
+                   //              "                                        <div class=\"row\" >\n" +
+                   //              "                                            <div class=\"form-group col-md-4\"></div>\n" +
+                   //              "                                            <div class=\"form-group col-md-4\" >\n" +
+                   //              "                                                <label class=\"col-sm-4 control-label\"></label>\n" +
+                   //              "                                                <div class=\"col-sm-8\">\n" +
+                   //              "                                                    <button type=\"submit\" class=\"btn btn-success\">添加学校申请</button>\n"+
+                   //              "                                                </div>\n" +
+                   //              "                                            </div>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "                            </div>\n" +
+                   //              "                        </div>\n" +
+                   //              "                    </form>\n" +
+                   //              "                    <!-- /tile body -->\n" +
+                   //              "                </section>\n" +
+                   //              "                <!-- /tile -->\n" +
+                   //              "            </div>\n" +
+                   //              "            <!-- /col 12 -->\n" +
+                   //              "        </div>\n" +
+                   //              "        <!-- /row -->\n" +
+                   //              "    </div>\n" +
+                   //              "    <!-- /content container -->"
+                   //          );
+                   //      });
+                   //  }
+                   //
+                   //  //大学申请
+                   //  if($val == '大学申请'){
+                   //      $(".main").fadeOut(2000,function(){
+                   //          $(this).remove();
+                   //          $("#content").append(
+                   //              "<!-- content main container -->\n" +
+                   //              "    <div class=\"main\" >\n" +
+                   //              "        <!-- row -->\n" +
+                   //              "        <div class=\"row\">\n" +
+                   //              "            <!-- col 12 -->\n" +
+                   //              "            <div class=\"col-md-12\">\n" +
+                   //              "                <!-- tile -->\n" +
+                   //              "                <section class=\"tile color transparent-white\">\n" +
+                   //              "                    <!-- tile header -->\n" +
+                   //              "                    <div class=\"tile-header\">\n" +
+                   //              "                        <h1><strong>大学申请</strong></h1>\n" +
+                   //              "                    </div>\n" +
+                   //              "                    <!-- /tile header -->\n" +
+                   //              "\n" +
+                   //              "                    <!-- tile body -->\n" +
+                   //              "                    <form method=\"post\" action=\"{:url('performance/add')}\">\n" +
+                   //              "                        <div class=\"tile-body\" id=\"extra_school\">\n" +
+                   //              "                            <div class=\"form-horizontal\">\n" +
+                   //              "                                <div class=\"row\">\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">负责文案</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"wenan\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"宋海培\">宋海培</option>\n" +
+                   //              "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">负责行政</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"contact_with_school\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"欧阳俊杰\">欧阳俊杰</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">所申学校</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='text' name=\"school_name\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">服务费</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' type='number' name=\"apply_fee\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">学杂费</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='number' name=\"tuition_fee\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">费用总计</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='number' name=\"total\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">申请年级</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='text' name=\"grade\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              // "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              // "                                        <label class=\"col-sm-4 control-label\">课程数量统计</label>\n" +
+                   //              // "                                        <div class=\"col-sm-8\">\n" +
+                   //              // "                                            <input class='form-control' type='text' name=\"credit\"/>\n" +
+                   //              // "                                        </div>\n" +
+                   //              // "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">入学日期</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <input class='form-control' dir=\"ltr\" data-mask='9999/99/99' placeholder='9999/99/99' type='text' name=\"enroll_date\"/>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                    <div class=\"form-group col-md-4\">\n" +
+                   //              "                                        <label class=\"col-sm-4 control-label\">录取状态</label>\n" +
+                   //              "                                        <div class=\"col-sm-8\">\n" +
+                   //              "                                            <select class=\"chosen-select chosen-transparent form-control\"  name=\"status\">\n" +
+                   //              "                                                <option value=\"\"> -- 请选择 -- </option>\n" +
+                   //              "                                                <option value=\"审核中\" selected>审核中</option>\n" +
+                   //              "                                                <option value=\"被录取\">被录取</option>\n" +
+                   //              "                                                <option value=\"被拒绝\">被拒绝</option>\n" +
+                   //              "                                            </select>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "                                <div class=\"form-group col-md-4 hidden\">\n" +
+                   //              "                                    <label class=\"col-sm-4 control-label\">客户信息</label>\n" +
+                   //              "                                    <div class=\"col-sm-8\">\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"student_id\" value=\"{$student_res.id}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"customer_name\" value=\"{$student_res.name}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"user\" value=\"{$Request.session.name}\"/>\n" +
+                   //              "                                        <input class='form-control' type='text' name=\"application_type\" value=\"大学申请\"/>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "                                <div class=\"tile-body\">\n" +
+                   //              "                                    <div class=\"form-horizontal\">\n" +
+                   //              "                                        <div class=\"row\" >\n" +
+                   //              "                                            <div class=\"form-group col-md-4\"></div>\n" +
+                   //              "                                            <div class=\"form-group col-md-4\" >\n" +
+                   //              "                                                <label class=\"col-sm-4 control-label\"></label>\n" +
+                   //              "                                                <div class=\"col-sm-8\">\n" +
+                   //              "                                                    <button type=\"submit\" class=\"btn btn-success\">添加学校申请</button>\n" +
+                   //              "                                                </div>\n" +
+                   //              "                                            </div>\n" +
+                   //              "                                        </div>\n" +
+                   //              "                                    </div>\n" +
+                   //              "                                </div>\n" +
+                   //              "                            </div>\n" +
+                   //              "                        </div>\n" +
+                   //              "                    </form>\n" +
+                   //              "                    <!-- /tile body -->\n" +
+                   //              "                </section>\n" +
+                   //              "                <!-- /tile -->\n" +
+                   //              "            </div>\n" +
+                   //              "            <!-- /col 12 -->\n" +
+                   //              "        </div>\n" +
+                   //              "        <!-- /row -->\n" +
+                   //              "    </div>\n" +
+                   //              "    <!-- /content container -->"
+                   //          );
+                   //      });
+                   //  }
+                });
             }
         });
     });
@@ -350,9 +865,11 @@
 
 
 
+
     //通过subservice的值，获取对应的进度
     $('#subservice').change(function(){
         $subservice = $(this).val();
+
         if($subservice == '学签和小签' || $subservice == '身份恢复和小签' || $subservice == '毕业工签和小签'){
             $('#progress2').removeClass('hidden');
         }else{

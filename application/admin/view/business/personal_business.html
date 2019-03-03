@@ -95,29 +95,16 @@
                                     <!--<th class="text-center">头像</th>-->
                                     <th class="text-center hidden">id</th>
                                     <th class="text-center">客户姓名</th>
-                                    <th class="text-center">所办业务</th>
-                                    <th class="text-center">创建时间</th>
-                                    <th class="text-center">所收费用</th>
-                                    <!--<th class="text-center">可退款金额</th>-->
+                                    <th class="text-center">当前业务</th>
+                                    <th class="text-center">服务费</th>
                                     <th class="text-center">进度</th>
-                                    <th class="text-center">递交 / 预约时间</th>
-                                    <th class="text-center">业务负责人</th>
-                                    <th class="text-center">业务跟进人</th>
-                                    {if condition="$Request.session.duty neq '文案'"}
+                                    <th class="text-center">递交/预约时间</th>
+                                    {if condition="$Request.session.duty != '文案'"}
                                     <th class="text-center">负责文案</th>
                                     {/if}
-                                    <th class="text-center">修改人</th>
                                     <th class="text-center">修改时间</th>
-
-                                    <th class="text-center">结案时间</th>
-
-                                    {if condition="$Request.session.duty eq '文案'"}
-                                    <th class="text-center">服务费修改原因</th>
-                                    {/if}
-
-
+                                    <th class="text-center">修改人</th>
                                     <th class="text-center">Action</th>
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -125,26 +112,15 @@
 
                                 {volist name="res" id="v"}
                                 <tr>
+                                    <!--id-->
                                     <td class="text-center hidden">{$v.id}</td>
-
+                                    <!--客户姓名-->
                                     <td class="text-center"><a href="{:url('business/edit',array('id'=>$v['id']))}">{$v.customer_name}</a></td>
-
+                                    <!--当前业务-->
                                     <td class="text-center">{$v.subservice_name}</td>
-                                    <td class="text-center">{$v.create_time|date="Y-m-d",###}</td>
+                                    <!--服务费-->
                                     <td class="text-center">$ {$v.service_fee}</td>
-
-                                    <!--<td class="text-center">-->
-                                    <!--{if condition="$v.subservice_name eq '疑难签证'"}-->
-                                        <!--$ {$v.refundable}-->
-                                    <!--{else/}-->
-                                        <!--{if condition = "$v.wenan eq null"}-->
-                                        <!--$ {$v.refundable}-->
-                                        <!--{else/}-->
-                                        <!--$ 0-->
-                                        <!--{/if}-->
-                                    <!--{/if}-->
-                                    <!--</td>-->
-
+                                    <!--进度-->
                                     {if condition="($v.subservice_name eq '学签和小签') || ($v.subservice_name eq '身份恢复和小签') || ($v.subservice_name eq '毕业工签和小签')"}
                                     <td class="text-center">
                                         签证：{$v.progress}
@@ -186,7 +162,7 @@
                                         <td class="text-center">{$v.progress}&nbsp;&nbsp;<span class="label label-success">in progress</span></td>
                                         {/if}
                                     {/if}
-
+                                    <!--递交/预约时间-->
                                     {if condition="$v.subservice_name eq '美国旅游签证' && $v.progress eq '完成预约'"}
                                     <td class="text-center"><span class="label-success label">预约时间</span> &nbsp;{$v.submit_time_visa}</td>
                                     {elseif condition="$v.subservice_name eq '美国旅游签证' && $v.progress neq '完成预约'"/}
@@ -194,25 +170,7 @@
                                     {else/}
                                     <td class="text-center">{$v.submit_time_visa}</td>
                                     {/if}
-
-                                    <td class="text-center">{$v.user}</td>
-
-                                    {if condition="$Request.session.sort <=2"}
-                                        {if condition="$v.is_export neq 0 and $v.export_to neq null"}
-                                        <td class="text-center">{$v.export_to}</td>
-                                        {elseif condition="$v.is_export eq 0 || $v.export_to eq null"/}
-                                        <td class="text-center"><span class="label label-red">off</span></td>
-                                        {else/}
-                                        <td class="text-center"><span class="label label-success">on</span><span class="label label-danger">未设置跟进人</span></td>
-                                        {/if}
-                                    {else/}
-                                        {if condition="$v.is_export neq 0 and $v.export_to neq null"}
-                                        <td class="text-center">{$v.export_to}</td>
-                                        {else/}
-                                        <td class="text-center">{$v.user}</td>
-                                        {/if}
-                                    {/if}
-
+                                    <!--负责文案-->
                                     {if condition="$Request.session.duty neq '文案'"}
                                     <td class="text-center">
                                         {if condition="$v.wenan eq null"}
@@ -222,40 +180,20 @@
                                         {/if}
                                     </td>
                                     {/if}
-
-
-                                    <td class="text-center">{$v.edit_name}</td>
-
+                                    <!--修改时间-->
                                     {if condition="$v.update_time neq null"}
                                     <td class="text-center">{$v.update_time|date="Y-m-d",###}</td>
                                     {else/}
                                     <td class="text-center"></td>
                                     {/if}
-
-
-                                    {empty name="$v.case_close_time"}
-                                    <td class="text-center">TBD</td>
-                                    {else/}
-                                    <td class="text-center">{$v.case_close_time|date="Y-m-d",###}</td>
-                                    {/empty}
-
-
-
-                                    {if condition="$Request.session.duty eq '文案'"}
+                                    <!--修改人-->
+                                    <td class="text-center">{$v.edit_name}</td>
+                                    <!--Acticon-->
                                     <td class="text-center">
-                                        {if condition="$v.service_fee_change_reason neq null"}
-                                        {$v.service_fee_change_reason}
-                                        {else/}
-                                        {/if}
-                                    </td>
-                                    {/if}
-
-
-                                    <td class="text-center">
-                                        {if condition="$Request.session.name neq $v.user && $Request.session.name neq $v.wenan"}
+                                        {if condition="$Request.session.name neq $v.user && $Request.session.name neq $v.wenan && $Request.session.name neq '欧阳俊杰'"}
                                         {else/}
                                             {if condition="$v.is_payoff eq 1"}
-                                            <a class="label label-success" href="#"><span class="fa fa-check">已付全款</span></a>
+                                            <a class="label label-success" href="#"><span class="fa fa-check">已付款</span></a>
                                             {else/}
                                             {if condition="$v.subservice_name eq '大学申请'"}
                                             <a class="btn btn-cyan btn-sm" href="{:url('business/university_program_add',array('student_id'=>$v.id))}">添加专业</a>
@@ -265,6 +203,21 @@
                                             <a class="btn btn-success btn-sm" href="{:url('business/college_program_list',array('student_id'=>$v.id))}">查看专业</a>
                                             {/if}
                                             <a class="btn btn-danger btn-sm" href="{:url('business/delete',array('id'=>$v.id))}">删除</a>
+                                            {/if}
+
+                                            {if condition="$Request.session.name neq $v.wenan"}
+                                            <!--销售认证，不管前台是否认证，销售都可以进行确认-->
+                                            {if condition="$v.certify eq null and $v.recertify eq null"}
+                                            <a class="label label-success" href="{:url('business/certify',array('student_id'=>$v.id))}"><i class="fa fa-usd">进行收款确认</i></a>
+                                            {elseif condition="$v.certify eq null and $v.recertify neq null"}
+                                            <a class="label label-success" href="{:url('business/certify',array('student_id'=>$v.id))}"><i class="fa fa-usd">进行收款确认</i></a>
+                                            <!--如果前台没有认证只有销售确认了，销售还可以取消-->
+                                            {elseif condition="$v.certify neq null and $v.recertify eq null"/}
+                                            <a class="label label-danger" href="{:url('business/cancel_certify',array('student_id'=>$v.id))}"><i class="fa fa-times">取消收款确认</i></a>
+                                            <!--如果前台也认证过了，就不能由销售自己取消，要先由前台取消，然后销售才能取消-->
+                                            {elseif condition="$v.certify neq null and $v.recertify neq null"/}
+                                            <a class="label label-danger" href="#"><i class="fa fa-times">前台已确认,禁止更改</i></a>
+                                            {/if}
                                             {/if}
                                         {/if}
                                     </td>

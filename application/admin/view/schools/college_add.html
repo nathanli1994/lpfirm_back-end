@@ -1,0 +1,348 @@
+<!-- page header -->
+<div class="pageheader">
+    <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 学院申请</h2>
+</div>
+<!-- /page header -->
+
+
+<!-- content main container -->
+<div class="main">
+    <!-- row -->
+    <div class="row">
+        <!-- col 12 -->
+        <div class="col-md-12">
+            <!-- tile -->
+            <section class="tile color transparent-white">
+                <!-- tile header -->
+                <div class="tile-header">
+                    <h1><strong></strong></h1>
+                </div>
+                <!-- /tile header -->
+
+                <!-- tile body -->
+                <form method="post" action="{:url('schools/college_add')}" id="extra_program">
+                    <input class='form-control hidden' type='text' name="student_id" value="{$student_id}" readonly/>
+                    <div class="tile-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务类别</label>
+                                    <div class="col-sm-8">
+                                        <input class='form-control' name="business_type" type='text' value="college申请"
+                                               readonly/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">具体业务</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="specific_business">
+                                            <option value="0">-- 请选择 --</option>
+                                            <option selected value="公立学院申请">公立学院申请</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">学院学校</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="schools" id="schools">
+                                            {empty name='colleges_res'}
+                                            <option selected value="0">没有学院学校的相关数据</option>
+                                            {else/}
+                                            <option value="0">-- 待定 --</option>
+                                            {volist name='colleges_res' id='v'}
+                                            <option value="{$v.schools}">{$v.schools}</option>
+                                            {/volist}
+                                            {/empty}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">申请费</label>
+                                    <div class="col-sm-8">
+                                        <!--需要根据选的学校进行变化-->
+                                        <input class='form-control' name="apply_fee" type='text' value="0" readonly
+                                               id="apply_fee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">支付方式</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="pay_apply_fee_method" id="pay_apply_fee_method">
+                                            <option value="汇款至学校">汇款至学校</option>
+                                            <option value="汇款至公司">汇款至公司</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">公司收费</label>
+                                    <div class="col-sm-8">
+                                        <!--根据支付方式发生变化，如果是汇款至学校，则显示0，否则显示申请费的费用-->
+                                        <input class='form-control' name="company_fee_apply_fee" type='text' value="0"
+                                               readonly id="company_fee_apply_fee"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">服务费</label>
+                                    <div class="col-sm-8">
+                                        <input class='form-control' name="service_fee" type='number' value="0"
+                                               id="service_fee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">公司收费</label>
+                                    <div class="col-sm-8">
+                                        <input class='form-control' name="company_fee_service_fee" type='text' value="0"
+                                               readonly id="company_fee_service_fee"/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">开学季度</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="open_season" id="open_season">
+                                            <option value="0">-- 请选择 --</option>
+                                            <option value="1月">1月</option>
+                                            <option value="5月">5月</option>
+                                            <option value="9月">9月</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">语言/专业</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="language_or_class" id="language_or_class">
+                                            <option value="0">-- 请选择 --</option>
+                                            <option value="语言加专业申请">语言加专业申请</option>
+                                            <option value="专业申请">专业申请</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">专业</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control" name="program"
+                                                id="program">
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">文案选择</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="wenan">
+                                            <option selected value="待定">-- 待定 --</option>
+                                            <option value="宋海培">宋海培</option>
+                                            <option value="欧阳俊杰">欧阳俊杰</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务员确认</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="total_confirm">
+                                            <option selected value="信息未确认">信息未确认</option>
+                                            <option value="信息确认无误">信息确认无误</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务员</label>
+                                    <div class="col-sm-8">
+                                        <input class='form-control' name="user" type='text'
+                                               value="{$Request.session.name}" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tile-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="form-group col-md-4"></div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8" id="buttons">
+                                        <button type="button" class="btn btn-success" id="program_add">添加专业</button>
+                                        <button type="submit" class="btn btn-success">提交申请</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <!-- /tile body -->
+            </section>
+            <!-- /tile -->
+        </div>
+        <!-- /col 12 -->
+    </div>
+    <!-- /row -->
+</div>
+<!-- /content container -->
+
+<script>
+    //载入之后执行的js
+    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    $('#schools').change(function () {
+
+        val = $(this).val();
+        if (val != 0) {
+            $.ajax({
+                type: "post",
+                url: "{:url('schools/getCollegeData')}",
+                data: 'school=' + val,
+                dataType: "json",
+                success: function (data) {
+                    $('#apply_fee').val(data['apply_fee']);
+                    $('#program').html(data['opt']);
+                    $('.chosen-select').chosen('destroy');
+                    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+                    $('#pay_apply_fee_method').change(function () {
+                        var pay_apply_fee_method = $(this).val();
+                        if (pay_apply_fee_method == '汇款至学校') {
+                            $('#company_fee_apply_fee').val(0);
+                        } else {
+                            var apply_fee = $('#apply_fee').val();
+                            $('#company_fee_apply_fee').val(apply_fee);
+                        }
+                    });
+
+                    $("#service_fee").bind('input propertychange', function () {
+                        var service_fee = $(this).val();
+                        $("#company_fee_service_fee").val(service_fee);
+                    });
+                }
+            });
+        } else {
+            $('#apply_fee').val(0);
+            $('#service_fee').val(0);
+            $('#company_fee_service_fee').val(0);
+            $('#program > option').remove();
+        }
+    });
+
+    counter = 0;
+    $('#extra_program').on('click','#program_add',function(){
+        counter += 1;
+        $('#extra_program').append(
+            "<section class=\"tile color transparent-white\">\n" +
+            "                        <!-- tile header -->\n" +
+            "                        <div class=\"tile-header\">\n" +
+            "                            <h1><strong>专业申请</strong></h1>\n" +
+            "                        </div>\n" +
+            "                        <div class=\"tile-body\">\n" +
+            "                            <div class=\"form-horizontal\">\n" +
+            "                                <div class=\"row\">\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">语言/专业</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <select class=\"chosen-select chosen-transparent form-control\"\n" +
+            "                                                    name=\"append_info[append_language_or_class][]\">\n" +
+            "                                                <option value=\"0\">-- 请选择 --</option>\n" +
+            "                                                <option value=\"语言加专业申请\">语言加专业申请</option>\n" +
+            "                                                <option value=\"专业申请\">专业申请</option>\n" +
+            "                                            </select>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">专业</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <select class=\"chosen-select chosen-transparent form-control\" name=\"append_info[append_program][]\"\n" +
+            "                                                    id=\"append_program" + counter + "\"" + ">\n" +
+            "\n" +
+            "                                            </select>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">开学季度</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <select class=\"chosen-select chosen-transparent form-control\"\n" +
+            "                                                    name=\"append_info[append_open_season][]\">\n" +
+            "                                                <option value=\"0\">-- 请选择 --</option>\n" +
+            "                                                <option value=\"1\">1月</option>\n" +
+            "                                                <option value=\"5\">5月</option>\n" +
+            "                                                <option value=\"9\">9月</option>\n" +
+            "                                            </select>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                </div>\n" +
+            "                                <div class=\"row\">\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">服务费</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <input class='form-control' name=\"append_info[append_service_fee][]\"  id=\"append_service_fee" + counter + "\"" + " type='number' value=\"0\"/>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\">公司收费</label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <input class='form-control' name=\"append_info[append_company_fee_service_fee][]\" id=\"append_company_fee_service_fee" + counter + "\"" + " type='text' value=\"0\"\n" +
+            "                                                   readonly/>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                    <div class=\"form-group col-md-4\">\n" +
+            "                                        <label class=\"col-sm-4 control-label\"></label>\n" +
+            "                                        <div class=\"col-sm-8\">\n" +
+            "                                            <button type=\"button\" class=\"btn btn-danger\" id=\"program_del\">删除专业</button>\n" +
+            "                                        </div>\n" +
+            "                                    </div>\n" +
+            "                                </div>\n" +
+            "                            </div>\n" +
+            "                        </div>\n" +
+            "                    </section>"
+        );
+        $('.chosen-select').chosen('destroy');
+        $(".chosen-select").chosen({disable_search_threshold: 1});
+
+        $("#append_service_fee"+counter).bind('input propertychange', function () {
+            var append_service_fee = $(this).val();
+            $("#append_company_fee_service_fee"+counter).val(append_service_fee);
+        });
+
+        schools_val = $('#schools').val();
+        if (schools_val != 0) {
+            $.ajax({
+                type: "post",
+                url: "{:url('schools/getCollegeData')}",
+                data: 'school=' + schools_val,
+                dataType: "json",
+                success: function (data) {
+                    $('#append_program'+counter).html(data['opt']);
+                    $('.chosen-select').chosen('destroy');
+                    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+                    $('#program_add').removeAttr('hidden');
+                }
+            });
+        }
+    });
+
+
+    $("#extra_program").on("click","#program_del",function(){
+        $('#program_del').parent().parent().parent().parent().parent().parent().remove();
+    });
+
+
+</script>

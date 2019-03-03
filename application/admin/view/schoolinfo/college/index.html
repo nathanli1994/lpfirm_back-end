@@ -51,7 +51,7 @@
     <!-- page header -->
     <div class="pageheader">
         <h2>
-            <i class="fa fa-lightbulb-o" style="line-height: 48px;padding-left: 0;"></i> 院校申请
+            <i class="fa fa-lightbulb-o" style="line-height: 48px;padding-left: 0;"></i> 高中列表
         </h2>
     </div>
     <!-- /page header -->
@@ -81,7 +81,7 @@
 
                     <!-- tile header -->
                     <div class="tile-header transparent">
-                        <h1><strong>院校申请信息</strong></h1>
+                        <h1><strong>高中</strong></h1>
                     </div>
                     <!-- /tile header -->
 
@@ -89,51 +89,31 @@
                     <div class="tile-body color transparent-black rounded-corners">
 
                         <div class="table-responsive">
-                            <table  class="table table-datatable table-custom" id="basicDataTable">
+                            <table  class="table table-datatable table-custom" id="basicDataTable" >
                                 <thead>
                                 <tr>
                                     <th class="text-center hidden">id</th>
-                                    <th class="text-center">客户姓名</th>
-                                    <th class="text-center">具体业务</th>
-                                    <th class="text-center">所申学校</th>
-                                    <th class="text-center">确认状态</th>
-                                    <th class="text-center">课时总计</th>
-                                    <th class="text-center">费用总计</th>
-                                    <th class="text-center">文案</th>
+                                    <th class="text-center">学校名字</th>
+                                    <th class="text-center">申请费</th>
+                                    <th class="text-center">专业</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
+                                <tbody id="sortable">
 
-
-                                <tbody>
                                 {volist name="res" id="v"}
                                 <tr>
-                                    <!--id-->
                                     <td class="text-center hidden">{$v.id}</td>
-                                    <!--客户姓名-->
-                                    <td class="text-center">{$v.customer_name}</td>
-                                    <!--具体业务-->
-                                    <td class="text-center">{$v.specific_business}</td>
-                                    <!--所申学校-->
                                     <td class="text-center">{$v.schools}</td>
-                                    <!--确认状态-->
-                                    <td class="text-center">{$v.total_confirm}</td>
-                                    <!--课时总计-->
-                                    <td class="text-center">{$v.total_class}</td>
-                                    <!--费用总计-->
-                                    <td class="text-center">$ {$v.total}</td>
+                                    <td class="text-center">$ {$v.apply_fee}</td>
+                                    <td class="text-center">{$v.program_name}</td>
 
-                                    <td class="text-center">{$v.wenan}</td>
                                     <td class="text-center">
-                                        {if condition="$v.business_type eq 'college申请'"}
-                                        <a class="btn btn-cyan" href="{:url('performance/college_application',array('id'=>$v['id'],'school'=>$v['schools']))}">查看专业</a>
-                                        {/if}
-
-                                        <a class="btn btn-danger" href="{:url('performance/delete',array('id'=>$v['id']))}">删除</a>
+                                        <a class="btn btn-cyan" href="{:url('college/edit',array('id'=>$v['id']))}">修改</a>
+                                        <a class="btn btn-danger" href="{:url('college/delete',array('id'=>$v['id']))}">删除</a>
                                     </td>
                                 </tr>
                                 {/volist}
-
 
                                 </tbody>
                             </table>
@@ -155,7 +135,6 @@
 
         </div>
         <!-- /row -->
-
 
 
 
@@ -214,6 +193,8 @@
 
 <script src="/static/assets/js/minimal.min.js"></script>
 
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
 <script>
     $(function(){
 
@@ -260,8 +241,8 @@
             "oLanguage": {
                 "sSearch": "搜 索 ："
             },
+            "aaSorting": [ [0,'desc']],
             "iDisplayLength":100,
-            "aaSorting": [[0,'desc']],
             "fnInitComplete": function(oSettings, json) {
                 $('.dataTables_filter input').attr("placeholder", "Search");
             }
@@ -269,9 +250,14 @@
 
         //initialize chosen
         $('.dataTables_length select').chosen({disable_search_threshold: 10});
+    });
 
-    })
+    var addLink = '<a href="{:url(\'college/add\')}" class="btn btn-green btn-sm add-row">添 加</a>';
+    $('#basicDataTable').append(addLink);
 
+    $(document).ready(function(){
+        $( "#sortable" ).sortable();
+    });
 </script>
 </body>
 </html>

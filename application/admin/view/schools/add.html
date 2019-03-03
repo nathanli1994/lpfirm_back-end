@@ -1,0 +1,310 @@
+<!-- page header -->
+<div class="pageheader">
+    <h2><i class="fa fa-thumb-tack" style="line-height: 48px;padding-left: 1px;"></i> 高中申请</h2>
+</div>
+<!-- /page header -->
+
+
+<!-- content main container -->
+<div class="main">
+    <!-- row -->
+    <div class="row">
+        <!-- col 12 -->
+        <div class="col-md-12">
+            <!-- tile -->
+            <section class="tile color transparent-white">
+                <!-- tile header -->
+                <div class="tile-header">
+                    <h1><strong></strong></h1>
+                </div>
+                <!-- /tile header -->
+
+                <!-- tile body -->
+                <form method="post" action="{:url('schools/add')}">
+                    <input class='form-control hidden' type='text' name="student_id" value="{$student_id}" readonly/>
+                    <div class="tile-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务类别</label>
+                                    <div class="col-sm-8">
+                                        <input class='form-control' name="business_type" type='text' value="高中申请"
+                                               readonly/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">具体业务</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="specific_business">
+                                            <option value="私立高中申请">私立高中申请</option>
+                                            <option value="公立高中申请">公立高中申请</option>
+                                            <option value="贵族私立高中申请">贵族私立高中申请</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">高中学校</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="schools" id="schools">
+                                            {empty name='highschools_res'}
+                                            <option selected value="">没有高中学校的相关数据</option>
+                                            {else/}
+                                            <option value="">-- 待定 --</option>
+                                            {volist name='highschools_res' id='v'}
+                                            <option value="{$v.school_name}">{$v.school_name}</option>
+                                            {/volist}
+                                            {/empty}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">申请费</label>
+                                    <div class="col-sm-8">
+                                        <!--需要根据选的学校进行变化-->
+                                        <input class='form-control' name="apply_fee" type='text' value="0" readonly id="apply_fee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">支付方式</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="pay_apply_fee_method" id="pay_apply_fee_method">
+                                            <option value="汇款至学校">汇款至学校</option>
+                                            <option value="汇款至公司">汇款至公司</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">公司收费</label>
+                                    <div class="col-sm-8">
+                                        <!--根据支付方式发生变化，如果是汇款至学校，则显示0，否则显示申请费的费用-->
+                                        <input class='form-control' name="company_fee_apply_fee" type='text' value="0"
+                                               readonly id="company_fee_apply_fee"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">服务费</label>
+                                    <div class="col-sm-8">
+                                        <!--值根据选的高中变化，如果服务费是0，支付方式和公司收费移除-->
+                                        <input class='form-control' name="service_fee" type='text' value="0" readonly id="service_fee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">支付方式</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="pay_service_fee_method" id="pay_service_fee_method">
+                                            <option value="汇款至学校">汇款至学校</option>
+                                            <option value="汇款至公司">汇款至公司</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">公司收费</label>
+                                    <div class="col-sm-8">
+                                        <!--根据支付方式发生变化，如果是汇款至学校，则显示0，否则显示服务费的费用-->
+                                        <input class='form-control' name="company_fee_service_fee" type='text' value="0"
+                                               readonly id="company_fee_service_fee"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">课程/门</label>
+                                    <div class="col-sm-8">
+                                        <!--值根据选的高中变化，如果服务费是0，支付方式和公司收费移除-->
+                                        <input class='form-control' name="fee_per_class" type='text' value="0"
+                                               readonly id="fee_per_class"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">课程总计</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="total_class" id="total_class">
+                                            <option value="0">-- 选择课程总计 --</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">学校学费</label>
+                                    <div class="col-sm-8">
+                                        <!--课程数*每门课的钱-->
+                                        <input class='form-control' name="tuition_fee" type='text' value="0" readonly id="tuition_fee"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">支付方式</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="pay_tuition_fee_method" id="pay_tuition_fee_method">
+                                            <option value="汇款至学校">汇款至学校</option>
+                                            <option value="汇款至公司">汇款至公司</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">公司收费</label>
+                                    <div class="col-sm-8">
+                                        <!--根据支付方式发生变化，如果是汇款至学校，则显示0，否则显示学费的费用-->
+                                        <input class='form-control' name="company_tuition_fee_fee" type='text' value="0"
+                                               readonly id="company_tuition_fee_fee"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">文案选择</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="wenan">
+                                            <option selected value="待定">-- 待定 --</option>
+                                            <option value="宋海培">宋海培</option>
+                                            <option value="欧阳俊杰">欧阳俊杰</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务员确认</label>
+                                    <div class="col-sm-8">
+                                        <select class="chosen-select chosen-transparent form-control"
+                                                name="total_confirm">
+                                            <option selected value="信息未确认">信息未确认</option>
+                                            <option value="信息确认无误">信息确认无误</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label">业务员</label>
+                                    <div class="col-sm-8">
+                                        <!--根据支付方式发生变化，如果是汇款至学校，则显示0，否则显示学费的费用-->
+                                        <input class='form-control' name="user" type='text' value="{$Request.session.name}"
+                                               readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tile-body">
+                        <div class="form-horizontal">
+                            <div class="row">
+                                <div class="form-group col-md-4"></div>
+                                <div class="form-group col-md-4">
+                                    <label class="col-sm-4 control-label"></label>
+                                    <div class="col-sm-8" id="buttons">
+                                        <button type="submit" class="btn btn-success">添加业务</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- /tile body -->
+            </section>
+            <!-- /tile -->
+        </div>
+        <!-- /col 12 -->
+    </div>
+    <!-- /row -->
+</div>
+<!-- /content container -->
+
+<script>
+    //载入之后执行的js
+    $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    $('#schools').change(function(){
+        var school_name = $(this).val();
+        if(school_name != ''){
+            $.ajax({
+                type:"post",
+                url:"{:url('schools/getSchoolData')}",
+                data:'school_name='+school_name,
+                dataType:"json",
+                success:function(data){
+                    $('#apply_fee').val(data['apply_fee']);
+                    $('#service_fee').val(data['service_fee']);
+                    $('#fee_per_class').val(data['fee_per_class']);
+
+                    $('#pay_apply_fee_method').change(function(){
+                        var pay_apply_fee_method = $(this).val();
+                        if(pay_apply_fee_method == '汇款至学校'){
+                            $('#company_fee_apply_fee').val(0);
+                        }else{
+                            var apply_fee = $('#apply_fee').val();
+                            $('#company_fee_apply_fee').val(apply_fee);
+                        }
+                    });
+
+
+                    $('#pay_service_fee_method').change(function(){
+                        var pay_service_fee_method = $(this).val();
+                        if(pay_service_fee_method == '汇款至学校'){
+                            $('#company_fee_service_fee').val(0);
+                        }else{
+                            var service_fee = $('#service_fee').val();
+                            $('#company_fee_service_fee').val(service_fee);
+                        }
+                    });
+
+                    $('#total_class').change(function(){
+                        var total_class = $(this).val();
+                        var fee_per_class = data['fee_per_class'];
+                        var total_fee = total_class * fee_per_class;
+                        $('#tuition_fee').val(total_fee);
+                    });
+
+                    $('#pay_tuition_fee_method').change(function () {
+                        pay_tuition_fee_method = $(this).val();
+                        if(pay_tuition_fee_method == '汇款至学校'){
+                            $('#company_tuition_fee_fee').val(0);
+                        }else{
+                            var tuition_fee = $('#tuition_fee').val();
+                            $('#company_tuition_fee_fee').val(tuition_fee);
+                            $('#total_class').change(function () {
+                                var total_class = $(this).val();
+                                var fee_per_class = $('#fee_per_class').val();
+                                if(pay_tuition_fee_method =='汇款至学校'){
+                                    $('#company_tuition_fee_fee').val(0);
+                                }else{
+                                    var tuition_fee = total_class*fee_per_class;
+                                    $('#company_tuition_fee_fee').val(tuition_fee);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }else{
+            $('#apply_fee').val(0);
+            $('#service_fee').val(0);
+            $('#fee_per_class').val(0);
+            $('#tuition_fee').val(0);
+            $('#total').val(0);
+        }
+    });
+</script>

@@ -41,7 +41,7 @@
                                         <label class="col-sm-4 control-label">当前业务</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control"  name="subservice_name" value="{$res.subservice_name}" readonly/>
-                                            <input type="text" class="form-control hidden"  name="business_id" value="{$res.id}" readonly/>
+                                            <input type="text" class="form-control hidden"  id='business_id' name="business_id" value="{$res.id}" readonly/>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -50,9 +50,16 @@
                                             <input type="text" class="form-control" value="{$res.fee_total}" readonly/>
                                         </div>
                                     </div>
+                                    {if condition="$res.balance neq 0 "}
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label">客户缴费总额</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" value="{$res.customer_pay}" readonly/>
+                                        </div>
+                                    </div>
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">
-                                            费用拖欠总计
+                                            费用亏欠
                                             {if condition="$res.fee_total_remain neq 0"}
                                             <i class="fa fa-times-circle" style="color: red"></i>
                                             {else/}
@@ -60,9 +67,10 @@
                                             {/if}
                                         </label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" value="{$res.fee_total_remain}" readonly/>
+                                            <input type="text" class="form-control" id='fee_total_remain' value="{$res.fee_total_remain}" readonly/>
                                         </div>
                                     </div>
+                                    {/if}
                                 </div>
 
 
@@ -80,7 +88,7 @@
                                         <label class="col-sm-4 control-label">已缴费金额</label>
                                         <div class="col-sm-8">
                                             {empty name="$res.service_amount"}
-                                            <input type="text" class="form-control" value="0" readonly/>
+                                            <input type="text" class="form-control"  readonly/>
                                             {else/}
                                             <input type="text" class="form-control" value="{$res.service_amount}" readonly/>
                                             {/empty}
@@ -112,7 +120,7 @@
                                         <label class="col-sm-4 control-label">已缴费金额</label>
                                         <div class="col-sm-8">
                                             {empty name="$res.service_amount"}
-                                            <input type="text" class="form-control" value="0" readonly/>
+                                            <input type="text" class="form-control"  readonly/>
                                             {else/}
                                             <input type="text" class="form-control" value="{$res.post_amount}" readonly/>
                                             {/empty}
@@ -144,7 +152,7 @@
                                         <label class="col-sm-4 control-label">已缴费金额</label>
                                         <div class="col-sm-8">
                                             {empty name="$res.service_amount"}
-                                            <input type="text" class="form-control" value="0" readonly/>
+                                            <input type="text" class="form-control" readonly/>
                                             {else/}
                                             <input type="text" class="form-control" value="{$res.goverment_amount}" readonly/>
                                             {/empty}
@@ -182,7 +190,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次服务费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="service_fee_amount" id="service_fee_amount"/>
+                                            <input type="number" class="form-control"  name="service_fee_amount" id="service_fee_amount" />
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -217,7 +225,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次服务费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="service_fee_amount" id="service_fee_amount"/>
+                                            <input type="number" class="form-control"  name="service_fee_amount" id="service_fee_amount" />
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4 hidden">
@@ -255,7 +263,8 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次政府费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="goverment_fee_amount" id="goverment_fee_amount"/>
+                                            <input type="number" class="form-control"  name="goverment_fee_amount" id="goverment_fee_amount" />
+                                            <i class="fa fa-exclamation-circle" style="color: red">如果缴费方式选择自行处理，此处请填写：{$res.goverment_fee}</i>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -273,6 +282,7 @@
                                                 <option value="1">支票</option>
                                                 <option value="2">刷卡</option>
                                                 <option value="3">转账</option>
+                                                <option value="4">客户自行处理</option>
                                             </select>
                                         </div>
                                     </div>
@@ -290,7 +300,8 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次政府费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="goverment_fee_amount" id="goverment_fee_amount"/>
+                                            <input type="number" class="form-control"  name="goverment_fee_amount" id="goverment_fee_amount" />
+                                            <i class="fa fa-exclamation-circle" style="color: red">如果缴费方式选择自行处理，此处请填写：{$res.goverment_fee}</i>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -308,6 +319,7 @@
                                                 <option value="1">支票</option>
                                                 <option value="2">刷卡</option>
                                                 <option value="3">转账</option>
+                                                <option value="4">客户自行处理</option>
                                             </select>
                                         </div>
                                     </div>
@@ -328,7 +340,8 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次邮寄费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="post_fee_amount" id="post_fee_amount"/>
+                                            <input type="number" class="form-control"  name="post_fee_amount" id="post_fee_amount" />
+                                            <i class="fa fa-exclamation-circle" style="color: red">如果缴费方式选择自行处理，此处请填写：{$res.post_fee}</i>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -346,6 +359,7 @@
                                                 <option value="1">支票</option>
                                                 <option value="2">刷卡</option>
                                                 <option value="3">转账</option>
+                                                <option value="4">客户自行处理</option>
                                             </select>
                                         </div>
                                     </div>
@@ -363,7 +377,8 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label">本次邮寄费缴费金额</label>
                                         <div class="col-sm-8">
-                                            <input type="number" class="form-control"  name="post_fee_amount" id="post_fee_amount"/>
+                                            <input type="number" class="form-control"  name="post_fee_amount" id="post_fee_amount" />
+                                            <i class="fa fa-exclamation-circle" style="color: red">如果缴费方式选择自行处理，此处请填写：{$res.post_fee}</i>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -381,22 +396,29 @@
                                                 <option value="1">支票</option>
                                                 <option value="2">刷卡</option>
                                                 <option value="3">转账</option>
+                                                <option value="4">客户自行处理</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                                 {/if}
 
+
                                 <div class="row">
                                     <div class="form-group col-md-4"></div>
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label"></label>
                                         <div class="col-sm-8">
+                                            {if condition="$res.fee_total_remain neq 0"}
                                             <button type="submit" class="btn btn-success">添加</button>
+                                            {else/}
+                                            <a href="javascript:history.go(-1);"><button type="button" class="btn btn-success">返回</button></a>
+                                            {/if}
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4"></div>
                                 </div>
+
                             </div>
                         </div>
                     </form>
@@ -423,6 +445,18 @@
 
 <script>
     $(".chosen-select").chosen({disable_search_threshold: 1});
+
+    $fee_total_remain = $('#fee_total_remain').val();
+    if($fee_total_remain == 0){
+        $id = $('#business_id').val();
+        $.ajax({
+            type:"post",
+            url:"{:url('pay/checkRemainBalance')}",
+            data:'id='+$id,
+            dataType:"json",
+            success:function(data){}
+        });
+    }
 
 
 </script>

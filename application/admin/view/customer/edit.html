@@ -56,9 +56,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label class="col-sm-4 control-label" >电话</label>
+                                        <label class="col-sm-4 control-label" >加拿大电话</label>
                                         <div class="col-sm-8">
                                             <input class='form-control' style="text-align:left" data-mask='+1 (999) - 999 - 9999' placeholder='+1 (999) - 999 - 9999' type='text' name="phone" value="{$res.phone}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label class="col-sm-4 control-label" >中国电话</label>
+                                        <div class="col-sm-8">
+                                            <input class='form-control' style="text-align:left" data-mask='+ (86) 999 - 9999 - 9999' placeholder='+ (86) 999 - 9999 - 9999' type='text' name="chinese_phone" value="{$res.chinese_phone}"/>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -159,7 +165,7 @@
                                     <div class="form-group col-md-4">
                                         <label class="col-sm-4 control-label" >护照号码</label>
                                         <div class="col-sm-8">
-                                            <input class='form-control' type='text' name="passport_number" value="{$res.passport_number}" readonly/>
+                                            <input class='form-control' id="passport_number" type='text' name="passport_number" value="{$res.passport_number}" readonly/><a class="label label-success" href="#" type="button"><i id="update_passport_number" class="fa fa-refresh">修改护照号码</i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -684,22 +690,6 @@
                     </div>
                 </section>
             </div>
-            <div class="col-md-12">
-                <section class="tile color transparent-white">
-                    <div class="tile-header">
-                        <h1><strong><a href="{:url('performance/add',array('student_id'=>$res.id,'performance_id'=>1))}"><button class="btn btn-greensea btn-lg">添加业绩</button></a></strong> </h1>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- tile -->
-                            <section class="tile color transparent-white">
-                                {include file="performance/performance_list" /}
-                            </section>
-                            <!-- /tile -->
-                        </div>
-                    </div>
-                </section>
-            </div>
         </div>
     </div>
     <!-- /content container -->
@@ -972,6 +962,12 @@
     });
     $('#extra_education_info').on('click', "#delete_new_education", function(){
         $(this).parent().parent().parent().remove();
+    });
+
+
+    $('#update_passport_number').click(function(){
+        $('#passport_number').removeAttr('readonly');
+        $('#passport_number').val('');
     });
 </script>
 </body>

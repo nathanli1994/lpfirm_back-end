@@ -93,11 +93,12 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center hidden">id</th>
-                                    <th class="text-center">申请人</th>
-                                    <th class="text-center">申请学校</th>
-                                    <th class="text-center">跟进人</th>
-                                    <th class="text-center">申请课时</th>
-                                    <th class="text-center">申请时间</th>
+                                    <th class="text-center">客户姓名</th>
+                                    <th class="text-center">服务费</th>
+                                    <th class="text-center">所申学校</th>
+                                    <th class="text-center">申请状态</th>
+                                    <th class="text-center">学费总计</th>
+                                    <th class="text-center">课时总计</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                                 </thead>
@@ -108,11 +109,28 @@
                                 <tr>
                                     <td class="text-center hidden">{$v.id}</td>
                                     <td class="text-center">{$v.customer_name}</td>
+                                    <td class="text-center">{$v.apply_fee}</td>
                                     <td class="text-center">{$v.school_name}</td>
-                                    <td class="text-center">{$v.user}</td>
+                                    <td class="text-center">{$v.status}</td>
+                                    <!--学费总计-->
+                                    {if condition="$v.tuition_fee != null"}
+                                    <td class="text-center">${$v.tuition_fee}</td>
+                                    {else/}
+                                    <td class="text-center"><span class="label label-success">$0</span></td>
+                                    {/if}
+                                    <!--课时总计-->
+                                    {if condition="$v.credit != null"}
                                     <td class="text-center">{$v.credit}</td>
-                                    <td class="text-center">{$v.create_time|date="Y-m-d",###}</td>
-                                    <td class="text-center"><a class="btn btn-danger" href="{:url('performance/delete',array('id'=>$v.id))}">删除</a></td>
+                                    {else/}
+                                    <td class="text-center"><span class="label label-success">0课时</span></td>
+                                    {/if}
+                                    <td class="text-center">
+                                        {if condition="$v.decision eq 1"}
+                                        <i class="fa fa-heart" style="color: cyan"> 客户终选</i>
+                                        {else/}
+                                        <a class="btn btn-danger" href="{:url('performance/delete',array('id'=>$v.id))}">删除</a>
+                                        {/if}
+                                    </td>
                                 </tr>
                                 {/volist}
 

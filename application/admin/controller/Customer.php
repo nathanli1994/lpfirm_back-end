@@ -20,13 +20,14 @@ class Customer extends Base
         }else{
             //计算：当前日期与护照到期日相差时间
             foreach ($res as $k => $v) {
-                $res[$k]['passport_due_diff'] = round((strtotime($v['passport_due']) - time()) / 3600 / 24);
+                $res[$k]['passport_due_diff'] = round((strtotime($v['passport_due']) - time() + 3600*24) / 3600 / 24);
             }
 
             foreach ($res as $k => $v) {
-                $res[$k]['visa_due_diff'] = round((strtotime($v['visa_due']) - time()) / 3600 / 24);
+                $res[$k]['visa_due_diff'] = round((strtotime($v['visa_due']) - time() + 3600*24) / 3600 / 24);
             }
 
+            $res = $this->count_down($res);
             $this->assign('res',$res);
         }
 
@@ -38,7 +39,7 @@ class Customer extends Base
 
         if(request()->isPost()){
             $data = input('post.');
-            $data['create_time'] = time();
+            $data['create_time'] = time() - 3600*24;
             //解决按钮开关值
             $data = $this->solve_on_off($data);
             //婚姻史
@@ -119,7 +120,7 @@ class Customer extends Base
 
         if(request()->isPost()){
             $data = input('post.');
-            $data['update_time'] = time();
+            $data['update_time'] = time() - 3600*24;
             //解决按钮开关值
             $data = $this->solve_on_off($data);
             //婚姻史
@@ -393,15 +394,18 @@ class Customer extends Base
         }else{
             //计算：当前日期与护照到期日相差时间
             foreach ($res as $k => $v) {
-                $res[$k]['passport_due_diff'] = round((strtotime($v['passport_due']) - time()) / 3600 / 24);
+                $res[$k]['passport_due_diff'] = (int)round((strtotime($v['passport_due']) - time() + 3600*24) / 3600 / 24);
             }
 
             foreach ($res as $k => $v) {
-                $res[$k]['visa_due_diff'] = round((strtotime($v['visa_due']) - time()) / 3600 / 24);
+                $res[$k]['visa_due_diff'] = (int)round((strtotime($v['visa_due']) - time() + 3600*24) / 3600 / 24);
             }
+
+            $res = $this->count_down($res);
 
             $this->assign('res',$res);
         }
+
 
         return view();
     }
@@ -490,6 +494,29 @@ class Customer extends Base
     }
 
 
+
+    public function count_down($res){
+        foreach ($res as $k=>$v){
+            //0<= xxx <=180  提醒剩余天数 180天倒计时
+            if(0<=$v['passport_due_diff'] && $v['passport_due_diff'] <= 180){
+                $res[$k]['passport_count_down'] = $v['passport_due_diff'];
+            }
+            //0<= xxx <=90  提醒剩余天数 90天倒计时
+            if(0<=$v['visa_due_diff'] && $v['visa_due_diff'] <= 90){
+                $res[$k]['visa_count_down'] = $v['visa_due_diff'];
+            }
+
+            //-90<= xxx <0  护照过期天数
+//            if(-90<=$v['passport_due_diff'] && $v['passport_due_diff'] < 0){
+//                $res[$k]['passport_count_down'] = abs($v['passport_due_diff']);
+//            }
+            //-90<= xxx <0  restoration剩余有效期
+            if(-90<=$v['visa_due_diff'] && $v['visa_due_diff'] < 0){
+                $res[$k]['visa_count_down'] = 90-abs($v['visa_due_diff']);
+            }
+        }
+        return $res;
+    }
 
 
 

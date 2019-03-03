@@ -1,6 +1,3 @@
-
-
-
 <!-- Sidebar -->
 <ul class="nav navbar-nav side-nav" id="sidebar">
 
@@ -11,21 +8,68 @@
     </li>
 
     <li class="navigation" id="navigation">
-        <a href="#" class="sidebar-toggle" data-toggle="#navigation">Navigation <i class="fa fa-angle-up"></i></a>
-
+        <br>
         <ul class="menu">
-
+            <!--销售-->
+            {if condition="$Request.session.duty == '销售' && $Request.session.name != '许诺'"}
             <li class="active">
-                <a href="{:url('index/index')}">
+                <a href="#">
                     <i class="fa fa-tachometer"></i> Dashboard
-                    <span class="badge badge-red">1</span>
+                    <span class="badge badge-red"></span>
                 </a>
             </li>
-
-
-
+            <li>
+                <a href="{:url('customer/personal_customer')}">
+                    <i class="fa fa-list"></i> 客户列表
+                </a>
+            </li>
+            <li>
+                <a href="{:url('business/personal_business')}">
+                    <i class="fa fa-list"></i> 业务服务
+                </a>
+            </li>
+            <li>
+                <a href="{:url('performance/personal_performance')}">
+                    <i class="fa fa-list"></i> 院校申请
+                </a>
+            </li>
+            <li>
+                <a href="{:url('index/password')}">
+                    <i class="fa fa-list"></i> 修改登陆密码
+                </a>
+            </li>
+            <!--销售-->
+            {else/}
             <!--个人-->
             {if condition="$Request.session.duty =='前台'"}
+            {else/}
+            {if condition="$Request.session.duty =='文案' && $Request.session.sort > 2"}
+            <li class="active">
+                <a href="#">
+                    <i class="fa fa-tachometer"></i> Dashboard
+                    <span class="badge badge-red"></span>
+                </a>
+            </li>
+            <li>
+                <a href="{:url('customer/personal_customer')}">
+                    <i class="fa fa-list"></i> 客户列表
+                </a>
+            </li>
+            <li>
+                <a href="{:url('business/personal_business')}">
+                    <i class="fa fa-list"></i> 业务服务
+                </a>
+            </li>
+            <li>
+                <a href="{:url('performance/personal_performance')}">
+                    <i class="fa fa-list"></i> 院校申请
+                </a>
+            </li>
+            <li>
+                <a href="{:url('index/password')}">
+                    <i class="fa fa-list"></i> 修改登陆密码
+                </a>
+            </li>
             {else/}
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -34,23 +78,22 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a href="{:url('customer/personal_customer')}">
-                            <i class="fa fa-caret-right"></i> <span>{$Request.session.name}</span> 的客户
+                            <i class="fa fa-caret-right"></i>客户列表
                         </a>
                         <a href="{:url('business/personal_business')}">
-                            <i class="fa fa-caret-right"></i> {$Request.session.name} 的业务
+                            <i class="fa fa-caret-right"></i>业务服务
                         </a>
                         <a href="{:url('performance/personal_performance')}">
-                            <i class="fa fa-caret-right"></i> {$Request.session.name} 的业绩
+                            <i class="fa fa-caret-right"></i>院校申请
                         </a>
                         <a href="{:url('index/password')}">
-                            <i class="fa fa-caret-right"></i> 修改登陆密码
+                            <i class="fa fa-caret-right"></i>修改登陆密码
                         </a>
                     </li>
                 </ul>
             </li>
             {/if}
-
-
+            {/if}
 
             <!--公司-->
             {if condition="$Request.session.sort <= 2"}
@@ -61,29 +104,22 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a href="{:url('customer/index')}">
-                            <i class="fa fa-caret-right"></i> 公司客户
+                            <i class="fa fa-caret-right"></i> 公司客户列表
                         </a>
                         <a href="{:url('business/index')}">
-                            <i class="fa fa-caret-right"></i> 公司业务
+                            <i class="fa fa-caret-right"></i> 公司业务列表
                         </a>
                         <a href="{:url('performance/index')}">
-                            <i class="fa fa-caret-right"></i> 公司业绩
+                            <i class="fa fa-caret-right"></i> 公司院校列表
                         </a>
                     </li>
                 </ul>
             </li>
             {elseif condition="$Request.session.duty =='前台'"}
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-list"></i> 公司 <b class="fa fa-plus dropdown-plus"></b>
+            <li class="active">
+                <a href="{:url('business/index')}">
+                    <i class="fa fa-caret-right"></i> 公司的业务
                 </a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="{:url('business/index')}">
-                            <i class="fa fa-caret-right"></i> 公司的业务
-                        </a>
-                    </li>
-                </ul>
             </li>
             {else/}
             {/if}
@@ -108,9 +144,9 @@
                         </a>
                     </li>
                     <!--<li>-->
-                        <!--<a href="{:url('standard/index')}">-->
-                            <!--<i class="fa fa-caret-right"></i> 职位绩效考核-->
-                        <!--</a>-->
+                    <!--<a href="{:url('standard/index')}">-->
+                    <!--<i class="fa fa-caret-right"></i> 职位绩效考核-->
+                    <!--</a>-->
                     <!--</li>-->
                     <li>
                         <a href="{:url('user/index')}">
@@ -150,56 +186,49 @@
                 <ul class="dropdown-menu">
 
                     <li>
-                        <a href="#">
+                        <a href="{:url('highschool/index')}">
                             <i class="fa fa-caret-right"></i>高中
                         </a>
-                        <a href="#">
-                            <i class="fa fa-caret-right"></i>语言
-                        </a>
-                        <a href="#">
+                        <a href="{:url('college/index')}">
                             <i class="fa fa-caret-right"></i>college
                         </a>
                     </li>
                 </ul>
             </li>
             {/if}
+            {/if}
+            <!--销售-->
         </ul>
     </li>
     <!--<li class="summary" id="order-summary">-->
-        <!--<a href="#" class="sidebar-toggle underline" data-toggle="#order-summary">Orders Summary <i class="fa fa-angle-up"></i></a>-->
+    <!--<a href="#" class="sidebar-toggle underline" data-toggle="#order-summary">Orders Summary <i class="fa fa-angle-up"></i></a>-->
 
-        <!--<div class="media">-->
-            <!--<a class="pull-right" href="#">-->
-                <!--<span id="sales-chart"></span>-->
-            <!--</a>-->
-            <!--<div class="media-body">-->
-                <!--This week sales-->
-                <!--<h3 class="media-heading">26, 149</h3>-->
-            <!--</div>-->
-        <!--</div>-->
+    <!--<div class="media">-->
+    <!--<a class="pull-right" href="#">-->
+    <!--<span id="sales-chart"></span>-->
+    <!--</a>-->
+    <!--<div class="media-body">-->
+    <!--This week sales-->
+    <!--<h3 class="media-heading">26, 149</h3>-->
+    <!--</div>-->
+    <!--</div>-->
 
-        <!--<div class="media">-->
-            <!--<a class="pull-right" href="#">-->
-                <!--<span id="balance-chart"></span>-->
-            <!--</a>-->
-            <!--<div class="media-body">-->
-                <!--This week balance-->
-                <!--<h3 class="media-heading">318, 651</h3>-->
-            <!--</div>-->
-        <!--</div>-->
+    <!--<div class="media">-->
+    <!--<a class="pull-right" href="#">-->
+    <!--<span id="balance-chart"></span>-->
+    <!--</a>-->
+    <!--<div class="media-body">-->
+    <!--This week balance-->
+    <!--<h3 class="media-heading">318, 651</h3>-->
+    <!--</div>-->
+    <!--</div>-->
     <!--</li>-->
 </ul>
 <!-- Sidebar end -->
 
 
-
-
-
 </div>
 <!--/.nav-collapse -->
-
-
-
 
 
 </div>

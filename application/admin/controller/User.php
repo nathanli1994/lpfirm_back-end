@@ -237,7 +237,7 @@ class User extends Base
 
 
         //计算每天的钱
-        $today =strtotime(date('Y-m-d',time()));
+        $today =strtotime(date('Y-m-d',time() - 3600*24));
 
         $business_count = db('business')->whereTime('create_time',$today)->count();
 
@@ -287,7 +287,7 @@ class User extends Base
 
         //计算月收入
         //业务部分
-        $month = date('Y年n月',time());
+        $month = date('Y年n月',time() - 3600*24);
 
         $month_business_res = db('business')->whereTime('create_time','month')->select()->toArray();
         foreach ($month_business_res as $k=>$v){
